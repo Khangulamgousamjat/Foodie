@@ -121,14 +121,6 @@ Foodie-main/
 - [x] Animated order tracking
 - [x] Item customizer (size, extras)
 - [x] Persistent cart & address
-- [ ] User authentication (login/signup)
-- [ ] Order history page
-- [ ] Restaurant ratings & reviews
-- [ ] Promo codes & discounts
-- [ ] Push notifications
-- [ ] Dark/Light mode toggle
-- [ ] PWA (Progressive Web App) support
-- [ ] Real payment gateway integration
 
 
 ## ⚖️ License
