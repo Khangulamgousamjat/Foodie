@@ -4,9 +4,6 @@
 
 **A premium, fully-featured food delivery web application built with pure HTML, CSS & JavaScript.**
 
-[![GitHub](https://img.shields.io/badge/GitHub-Khangulamgousamjat%2FFoodie-181717?style=for-the-badge&logo=github)](https://github.com/Khangulamgousamjat/Foodie)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-
 <br/>
 
 ![ZEST Food Delivery App](https://img.shields.io/badge/Version-2.0-f47c2b?style=flat-square)
