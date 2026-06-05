@@ -12,7 +12,7 @@
 <br/>
 
 ![ZEST Food Delivery App](https://img.shields.io/badge/Version-2.0-f47c2b?style=flat-square)
-![Restaurants](https://img.shields.io/badge/Restaurants-35+-f47c2b?style=flat-square)
+![Restaurants](https://img.shields.io/badge/Restaurants-100+-f47c2b?style=flat-square)
 ![Menu Items](https://img.shields.io/badge/Menu_Items-200+-f47c2b?style=flat-square)
 ![No Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen?style=flat-square)
 
