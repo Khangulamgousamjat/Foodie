@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZEST — Food Delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a;
+    --surface: #1a1714;
+    --card: #211e1a;
+    --border: #2e2a25;
+    --accent: #f47c2b;
+    --accent2: #e8b84b;
+    --green: #5cb87a;
+    --text: #f0ebe3;
+    --muted: #8a8279;
+    --danger: #e05555;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(15,13,10,.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent2); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-addr {
+    font-size: .82rem; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-addr strong { color: var(--text); }
+  .cart-btn {
+    position: relative;
+    background: var(--accent);
+    border: none; cursor: pointer;
+    color: #fff; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; font-size: .9rem;
+    padding: 10px 22px; border-radius: 50px;
+    display: flex; align-items: center; gap: 8px;
+    transition: background .2s, transform .15s;
+  }
+  .cart-btn:hover { background: #e06b1a; transform: scale(1.04); }
+  .cart-badge {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--accent2); color: #111;
+    font-size: .7rem; font-weight: 700;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s;
+  }
+  .cart-badge.bump { animation: bump .25s ease; }
+  @keyframes bump { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5)} }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 40px 60px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px; align-items: center;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(244,124,43,.12); border: 1px solid rgba(244,124,43,.3);
+    color: var(--accent); font-size: .78rem; font-weight: 500;
+    padding: 6px 14px; border-radius: 50px;
+    margin-bottom: 20px; letter-spacing: 1px;
+  }
+  .hero-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 420px; margin-bottom: 36px; }
+  .hero-cta { display: flex; gap: 14px; align-items: center; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500; font-size: 1rem;
+    padding: 14px 32px; border-radius: 50px;
+    transition: background .2s, transform .15s;
+  }
+  .btn-primary:hover { background: #e06b1a; transform: translateY(-2px); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text); border: 1px solid var(--border); cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; padding: 14px 28px; border-radius: 50px;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-visual {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    transform: rotate(2deg);
+  }
+  .hero-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px;
+    transition: transform .3s;
+  }
+  .hero-card:hover { transform: scale(1.03); }
+  .hero-card:nth-child(2) { margin-top: 24px; }
+  .hero-card:nth-child(4) { margin-top: -24px; }
+  .hero-emoji { font-size: 2.5rem; margin-bottom: 10px; }
+  .hero-card h4 { font-size: .9rem; font-weight: 500; margin-bottom: 4px; }
+  .hero-card span { font-size: .8rem; color: var(--accent); font-weight: 500; }
+
+  /* ── SEARCH + FILTER ── */
+  .section { max-width: 1200px; margin: 0 auto; padding: 0 40px 60px; }
+  .search-bar {
+    display: flex; gap: 12px; margin-bottom: 28px;
+  }
+  .search-input {
+    flex: 1;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: .95rem; padding: 14px 20px; border-radius: 50px;
+    outline: none; transition: border-color .2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+  .search-btn {
+    background: var(--accent); border: none; cursor: pointer;
+    color: #fff; padding: 14px 28px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: .95rem;
+    transition: background .2s;
+  }
+  .search-btn:hover { background: #e06b1a; }
+
+  .filters {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px;
+  }
+  .filter-chip {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: .82rem;
+    padding: 8px 18px; border-radius: 50px;
+    transition: all .2s;
+  }
+  .filter-chip:hover, .filter-chip.active {
+    background: rgba(244,124,43,.15);
+    border-color: var(--accent); color: var(--accent);
+  }
+
+  /* ── SECTION HEADING ── */
+  .sec-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 24px;
+  }
+  .sec-head h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem; letter-spacing: 2px;
+  }
+  .sec-head a { font-size: .85rem; color: var(--accent); text-decoration: none; cursor: pointer; }
+
+  /* ── RESTAURANT GRID ── */
+  .restaurant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px; margin-bottom: 60px;
+  }
+  .restaurant-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; overflow: hidden; cursor: pointer;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .restaurant-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(244,124,43,.4);
+    box-shadow: 0 16px 40px rgba(0,0,0,.5);
+  }
+  .restaurant-img {
+    height: 160px; font-size: 5rem;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .restaurant-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--accent); color: #fff;
+    font-size: .7rem; font-weight: 600;
+    padding: 4px 10px; border-radius: 50px;
+  }
+  .restaurant-badge.new { background: var(--green); }
+  .restaurant-info { padding: 18px; }
+  .restaurant-info h3 { font-size: 1.05rem; font-weight: 500; margin-bottom: 6px; }
+  .restaurant-meta {
+    display: flex; gap: 14px; align-items: center;
+    font-size: .8rem; color: var(--muted);
+  }
+  .rating { color: var(--accent2); font-weight: 600; }
+  .tag-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .tag {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); font-size: .72rem;
+    padding: 3px 10px; border-radius: 50px;
+  }
+
+  /* ── MENU MODAL ── */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .modal-backdrop.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 720px;
+    max-height: 85vh; overflow-y: auto;
+    transform: translateY(40px); transition: transform .35s cubic-bezier(.22,1,.36,1);
+    padding: 32px 36px 40px;
+  }
+  .modal-backdrop.open .modal { transform: translateY(0); }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 28px;
+  }
+  .modal-close {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); cursor: pointer;
+    width: 36px; height: 36px; border-radius: 50%;
+    font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .modal-close:hover { background: var(--border); }
+  .modal h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; }
+  .modal-meta { font-size: .85rem; color: var(--muted); margin-top: 4px; }
+
+  .menu-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .menu-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: border-color .2s;
+  }
+  .menu-item:hover { border-color: rgba(244,124,43,.4); }
+  .menu-item-info h4 { font-size: .92rem; font-weight: 500; margin-bottom: 4px; }
+  .menu-item-info p { font-size: .78rem; color: var(--muted); line-height: 1.5; }
+  .menu-item-right { text-align: right; flex-shrink: 0; margin-left: 14px; }
+  .menu-item-price { font-weight: 600; color: var(--accent2); margin-bottom: 8px; }
+  .add-btn {
+    background: var(--accent); border: none; cursor: pointer;
+    color: #fff; font-size: .8rem; font-weight: 500;
+    padding: 7px 16px; border-radius: 50px;
+    transition: background .2s, transform .15s;
+  }
+  .add-btn:hover { background: #e06b1a; transform: scale(1.07); }
+
+  /* ── CART SIDEBAR ── */
+  .cart-sidebar {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 300;
+    width: 380px; background: var(--surface);
+    border-left: 1px solid var(--border);
+    transform: translateX(100%); transition: transform .35s cubic-bezier(.22,1,.36,1);
+    display: flex; flex-direction: column;
+    padding: 28px 28px 36px;
+  }
+  .cart-sidebar.open { transform: translateX(0); }
+  .cart-sidebar-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 28px;
+  }
+  .cart-sidebar-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 2px;
+  }
+  .cart-close {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); cursor: pointer;
+    width: 36px; height: 36px; border-radius: 50%;
+    font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+  }
+  .cart-items { flex: 1; overflow-y: auto; margin-bottom: 20px; }
+  .cart-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 200px; color: var(--muted); gap: 10px; font-size: .9rem;
+  }
+  .cart-empty span { font-size: 3rem; }
+  .cart-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    animation: slideIn .2s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
+  .cart-row-emoji { font-size: 1.8rem; }
+  .cart-row-info { flex: 1; }
+  .cart-row-info h4 { font-size: .88rem; font-weight: 500; }
+  .cart-row-info span { font-size: .78rem; color: var(--muted); }
+  .cart-qty {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .qty-btn {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); cursor: pointer;
+    width: 26px; height: 26px; border-radius: 50%;
+    font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .qty-btn:hover { background: var(--border); }
+  .cart-row-price { font-weight: 600; color: var(--accent2); font-size: .9rem; }
+  .cart-summary {
+    border-top: 1px solid var(--border); padding-top: 20px;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between;
+    font-size: .87rem; color: var(--muted); margin-bottom: 8px;
+  }
+  .summary-row.total {
+    font-size: 1rem; font-weight: 600; color: var(--text); margin-top: 12px;
+  }
+  .checkout-btn {
+    width: 100%; margin-top: 18px;
+    background: var(--accent); border: none; cursor: pointer;
+    color: #fff; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 500;
+    padding: 16px; border-radius: 50px;
+    transition: background .2s, transform .15s;
+  }
+  .checkout-btn:hover { background: #e06b1a; transform: translateY(-2px); }
+
+  /* ── ORDER SUCCESS ── */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--green); color: #fff;
+    font-size: .92rem; font-weight: 500;
+    padding: 14px 28px; border-radius: 50px;
+    z-index: 999; transition: transform .35s cubic-bezier(.22,1,.36,1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--muted); font-size: .82rem;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; color: var(--accent); letter-spacing: 2px;
+  }
+
+  /* ── TRACKING OVERLAY ── */
+  .tracking-overlay {
+    position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,.75); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s;
+  }
+  .tracking-overlay.open { opacity: 1; pointer-events: all; }
+
+  .tracking-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 28px; width: 560px; max-width: 95vw;
+    overflow: hidden;
+    transform: scale(.94) translateY(20px);
+    transition: transform .4s cubic-bezier(.22,1,.36,1);
+  }
+  .tracking-overlay.open .tracking-panel { transform: scale(1) translateY(0); }
+
+  /* MAP AREA */
+  .track-map {
+    position: relative; height: 260px;
+    background: #121820;
+    overflow: hidden;
+  }
+  /* Road grid */
+  .track-map::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  /* Roads */
+  .track-map::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.09) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,255,255,.09) 2px, transparent 2px);
+    background-size: 120px 120px;
+  }
+
+  .map-label {
+    position: absolute; top: 14px; left: 16px;
+    background: rgba(15,13,10,.8); border: 1px solid var(--border);
+    color: var(--muted); font-size: .72rem;
+    padding: 5px 12px; border-radius: 50px;
+    backdrop-filter: blur(6px);
+    z-index: 2;
+  }
+
+  /* Destination pin */
+  .dest-pin {
+    position: absolute; bottom: 44px; right: 80px;
+    z-index: 3; text-align: center;
+  }
+  .dest-pin::after {
+    content: '🏠';
+    font-size: 1.6rem;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,.6));
+  }
+  .dest-label {
+    background: var(--accent); color: #fff;
+    font-size: .65rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 50px;
+    margin-top: 4px; white-space: nowrap;
+  }
+
+  /* Restaurant pin */
+  .rest-pin {
+    position: absolute; top: 40px; left: 60px;
+    z-index: 3; text-align: center;
+  }
+  .rest-pin::after {
+    content: '🍽️';
+    font-size: 1.4rem;
+  }
+  .rest-label {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted); font-size: .6rem;
+    padding: 2px 8px; border-radius: 50px; margin-top: 4px;
+    white-space: nowrap;
+  }
+
+  /* Dashed route line (SVG) */
+  .route-svg {
+    position: absolute; inset: 0; z-index: 1;
+    width: 100%; height: 100%;
+  }
+
+  /* Rider dot */
+  .rider-dot {
+    position: absolute; z-index: 5;
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 0 0 0 rgba(244,124,43,.5);
+    animation: riderPulse 1.8s infinite;
+    transition: left 1s linear, top 1s linear;
+  }
+  @keyframes riderPulse {
+    0% { box-shadow: 0 0 0 0 rgba(244,124,43,.5); }
+    70% { box-shadow: 0 0 0 12px rgba(244,124,43,0); }
+    100% { box-shadow: 0 0 0 0 rgba(244,124,43,0); }
+  }
+
+  /* TRACK INFO */
+  .track-info { padding: 24px 28px 28px; }
+
+  .track-status-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .track-status-text h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem; letter-spacing: 1.5px;
+    margin-bottom: 2px;
+  }
+  .track-status-text p { font-size: .82rem; color: var(--muted); }
+
+  .eta-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 3px solid var(--accent);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: rgba(244,124,43,.08);
+  }
+  .eta-min {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; color: var(--accent); line-height: 1;
+  }
+  .eta-label { font-size: .6rem; color: var(--muted); letter-spacing: 1px; }
+
+  /* PROGRESS STEPS */
+  .track-steps {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 20px;
+  }
+  .step {
+    display: flex; flex-direction: column; align-items: center;
+    flex: 1; position: relative;
+  }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem; z-index: 1;
+    transition: all .4s;
+  }
+  .step.done .step-dot {
+    background: var(--green); border-color: var(--green);
+  }
+  .step.active .step-dot {
+    background: var(--accent); border-color: var(--accent);
+    animation: riderPulse 1.8s infinite;
+  }
+  .step-label { font-size: .65rem; color: var(--muted); margin-top: 6px; text-align: center; }
+  .step.done .step-label, .step.active .step-label { color: var(--text); }
+
+  .step-line {
+    flex: 1; height: 2px; background: var(--border);
+    margin-top: -14px; position: relative; z-index: 0;
+    transition: background .4s;
+  }
+  .step-line.done { background: var(--green); }
+
+  /* RIDER INFO ROW */
+  .rider-row {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px;
+  }
+  .rider-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--accent); font-size: 1.4rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .rider-details { flex: 1; }
+  .rider-details h4 { font-size: .9rem; font-weight: 500; margin-bottom: 2px; }
+  .rider-details span { font-size: .78rem; color: var(--muted); }
+  .rider-actions { display: flex; gap: 8px; }
+  .rider-action-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .rider-action-btn:hover { background: var(--border); }
+
+  .track-close-btn {
+    display: block; width: 100%; margin-top: 16px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: .85rem; padding: 10px; border-radius: 50px;
+    cursor: pointer; transition: all .2s;
+  }
+  .track-close-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .hero { grid-template-columns: 1fr; padding: 40px 20px; }
+    .hero-visual { display: none; }
+    .section { padding: 0 20px 40px; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .cart-sidebar { width: 100%; }
+    .tracking-panel { border-radius: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">ZE<span>ST</span></a>
+  <div class="nav-right">
+    <div class="nav-addr" onclick="openLocationModal()" style="cursor: pointer; padding: 6px 12px; border-radius: 50px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border)';" title="Change location">
+      📍 <strong id="nav-city">San Francisco, CA</strong>
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 Cart
+      <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-tag"><span class="dot"></span> DELIVERING NOW</div>
+    <h1>Food That<br>Hits <em>Different.</em></h1>
+    <p>From hidden gems to local favorites — hot meals at your door in 30 minutes or less. No compromises.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.querySelector('.section').scrollIntoView({behavior:'smooth'})">Order Now</button>
+      <button class="btn-ghost">See Menu</button>
+    </div>
+  </div>
+  <div class="hero-visual" id="hero-visual"></div>
+</div>
+
+<!-- MAIN SECTION -->
+<div class="section">
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <input class="search-input" type="text" id="search-input" placeholder="Search restaurants or dishes…" oninput="filterRestaurants()">
+    <button class="search-btn">Search</button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters" id="filters"></div>
+
+  <!-- RESTAURANT GRID -->
+  <div class="sec-head">
+    <h2>Restaurants Near You</h2>
+    <a onclick="clearFilter()">Show all →</a>
+  </div>
+  <div class="restaurant-grid" id="restaurant-grid"></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">ZEST</span>
+  <span>© 2026 ZEST Delivery. All rights reserved.</span>
+  <span>🍕 Made with hunger.</span>
+</footer>
+
+<!-- MENU MODAL -->
+<div class="modal-backdrop" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modal-title">Restaurant</h2>
+        <div class="modal-meta" id="modal-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="menu-grid" id="menu-grid"></div>
+  </div>
+</div>
+
+<!-- LOCATION MODAL -->
+<div class="modal-backdrop" id="location-modal" onclick="closeLocationModal(event)">
+  <div class="modal" style="max-width: 500px;">
+    <div class="modal-header">
+      <div>
+        <h2>Select Delivery Location</h2>
+        <div class="modal-meta">Tell us where to send your delicious hot meal</div>
+      </div>
+      <button class="modal-close" onclick="closeLocationModalDirect()">✕</button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <button class="checkout-btn" onclick="autoGetLocation()" style="margin-top: 0; background: var(--accent2); color: #111; font-weight: 600;">
+        📍 Use Live / Current Location
+      </button>
+      <div style="text-align: center; color: var(--muted); font-size: 0.8rem; margin: 4px 0;">— OR —</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="font-size: 0.85rem; color: var(--muted);">Enter Address Manually</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="manual-address-input" class="search-input" placeholder="Type your delivery street address..." style="flex: 1;">
+          <button class="search-btn" onclick="saveManualAddress()">Save</button>
+        </div>
+      </div>
+      <div id="location-status" style="font-size: 0.85rem; color: var(--green); text-align: center; display: none; line-height: 1.5; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border);"></div>
+      
+      <!-- CHECKOUT CONFIRMATION BUTTON -->
+      <div id="checkout-confirm-container" style="display: none; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; text-align: center;">
+        <button class="checkout-btn" onclick="executePlaceOrder()" style="margin-top: 0; background: var(--accent); color: #fff; font-weight: 600;">
+          🚀 Confirm Address & Place Order →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMIZER MODAL -->
+<div class="modal-backdrop" id="customizer-modal" onclick="closeCustomizerModal(event)">
+  <div class="modal" style="max-width: 480px;">
+    <div class="modal-header">
+      <div>
+        <h2 id="cust-title">Customize Item</h2>
+        <div class="modal-meta" id="cust-desc">Select your preferences below</div>
+      </div>
+      <button class="modal-close" onclick="closeCustomizerModalDirect()">✕</button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- SIZE OPTION -->
+      <div>
+        <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text); font-weight: 500;">Choose Size</h4>
+        <div style="display: flex; gap: 10px;">
+          <label style="flex: 1; display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)';" onclick="this.querySelector('input').checked=true; updateCustomizerPrice();">
+            <span style="font-size: 0.85rem;">Standard</span>
+            <input type="radio" name="cust-size" value="Standard" checked onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
+          </label>
+          <label style="flex: 1; display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)';" onclick="this.querySelector('input').checked=true; updateCustomizerPrice();">
+            <span style="font-size: 0.85rem;">Large (+$2.50)</span>
+            <input type="radio" name="cust-size" value="Large" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
+          </label>
+        </div>
+      </div>
+      
+      <!-- EXTRAS -->
+      <div>
+        <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text); font-weight: 500;">Add Extras</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)';" onclick="const chk=this.querySelector('input'); chk.checked=!chk.checked; updateCustomizerPrice();">
+            <span style="font-size: 0.85rem;">🧀 Extra Cheese (+$1.50)</span>
+            <input type="checkbox" id="cust-extra-cheese" value="1.50" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
+          </label>
+          <label style="display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)';" onclick="const chk=this.querySelector('input'); chk.checked=!chk.checked; updateCustomizerPrice();">
+            <span style="font-size: 0.85rem;">🥓 Extra Bacon (+$2.00)</span>
+            <input type="checkbox" id="cust-extra-bacon" value="2.00" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
+          </label>
+        </div>
+      </div>
+
+      <!-- PRICE & ADD -->
+      <div style="border-top: 1px solid var(--border); padding-top: 18px; display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+        <div>
+          <div style="font-size: 0.75rem; color: var(--muted); margin-bottom: 2px;">Total Price</div>
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--accent2);" id="cust-total-price">$0.00</span>
+        </div>
+        <button class="checkout-btn" id="cust-add-btn" style="margin-top: 0; width: auto; padding: 12px 32px; font-weight: 600;">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-sidebar-header">
+    <h2>Your Order</h2>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-summary" id="cart-summary"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Order placed! Arriving in ~28 min.</div>
+
+<!-- TRACKING OVERLAY -->
+<div class="tracking-overlay" id="tracking-overlay">
+  <div class="tracking-panel">
+    <div class="track-map" id="track-map">
+      <div class="map-label">📍 Live Tracking</div>
+      <svg class="route-svg" id="route-svg" viewBox="0 0 560 260" preserveAspectRatio="none">
+        <defs>
+          <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="rgba(244,124,43,.5)"/>
+          </marker>
+        </defs>
+        <path id="route-path" d="M80,60 C200,60 240,200 440,200"
+          stroke="rgba(244,124,43,.3)" stroke-width="2.5" fill="none" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
+        <path id="route-progress" d="M80,60 C200,60 240,200 440,200"
+          stroke="#f47c2b" stroke-width="2.5" fill="none" stroke-dasharray="0,9999" stroke-linecap="round"/>
+      </svg>
+      <div class="rest-pin" style="top:34px;left:55px;"><div class="rest-label" id="rest-pin-label">Restaurant</div></div>
+      <div class="dest-pin" style="bottom:38px;right:60px;"><div class="dest-label" id="dest-pin-label">Your Location</div></div>
+      <div class="rider-dot" id="rider-dot">🛵</div>
+    </div>
+    <div class="track-info">
+      <div class="track-status-row">
+        <div class="track-status-text">
+          <h3 id="track-status-heading">Order Confirmed!</h3>
+          <p id="track-status-sub">Your food is being prepared with care</p>
+        </div>
+        <div class="eta-circle">
+          <div class="eta-min" id="eta-min">28</div>
+          <div class="eta-label">MIN ETA</div>
+        </div>
+      </div>
+      <div class="track-steps">
+        <div class="step done" id="step-0"><div class="step-dot">✓</div><div class="step-label">Confirmed</div></div>
+        <div class="step-line" id="line-0"></div>
+        <div class="step active" id="step-1"><div class="step-dot">🍳</div><div class="step-label">Preparing</div></div>
+        <div class="step-line" id="line-1"></div>
+        <div class="step" id="step-2"><div class="step-dot">🛵</div><div class="step-label">On the way</div></div>
+        <div class="step-line" id="line-2"></div>
+        <div class="step" id="step-3"><div class="step-dot">🏠</div><div class="step-label">Delivered</div></div>
+      </div>
+      <div class="rider-row">
+        <div class="rider-avatar">🧑</div>
+        <div class="rider-details">
+          <h4>Marcus T.</h4>
+          <span>⭐ 4.92 · 1,240 deliveries · Honda PCX 150</span>
+        </div>
+        <div class="rider-actions">
+          <button class="rider-action-btn" title="Call rider">📞</button>
+          <button class="rider-action-btn" title="Message rider">💬</button>
+        </div>
+      </div>
+      <button class="track-close-btn" onclick="closeTracking()">Dismiss tracking view</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   MOCK BACKEND — all data & "API" logic
+═══════════════════════════════════════ */
+const DB = {
+  categories: ["All","🍕 Pizza","🍣 Sushi","🌮 Tacos","🍔 Burgers","🥗 Healthy","🍜 Noodles","🍛 Indian","🧁 Desserts","🥡 Asian","🍝 Italian","🍢 Kebab","🥤 Drinks"],
+
+  restaurants: [
+    {
+      id: 1, name: "Napoli Fire", emoji: "🍕", bg: "#2a1f15",
+      rating: 4.8, time: "22–35 min", fee: "$1.99", category: "🍕 Pizza",
+      badge: "", tags: ["Wood-fired","Neapolitan","Italian"],
+      menu: [
+        { id: 101, name: "Margherita", desc: "San Marzano, fior di latte, basil", price: 14.99, emoji: "🍕" },
+        { id: 102, name: "Diavola", desc: "Spicy salami, chili oil, olives", price: 16.99, emoji: "🌶️" },
+        { id: 103, name: "Quattro Formaggi", desc: "Four cheese blend, honey drizzle", price: 17.49, emoji: "🧀" },
+        { id: 104, name: "Prosciutto & Rocket", desc: "Cured ham, peppery leaves", price: 18.99, emoji: "🥗" },
+      ]
+    },
+    {
+      id: 2, name: "Omakase Express", emoji: "🍣", bg: "#151f2a",
+      rating: 4.9, time: "30–45 min", fee: "$2.49", category: "🍣 Sushi",
+      badge: "TOP RATED", tags: ["Japanese","Fresh","Omakase"],
+      menu: [
+        { id: 201, name: "Salmon Nigiri (×2)", desc: "Atlantic salmon, sushi rice", price: 8.99, emoji: "🐟" },
+        { id: 202, name: "Dragon Roll", desc: "Avocado, crab, eel sauce", price: 15.49, emoji: "🍱" },
+        { id: 203, name: "Spicy Tuna Roll", desc: "Sriracha mayo, cucumber", price: 13.99, emoji: "🔥" },
+        { id: 204, name: "Edamame", desc: "Sea salt, lemon zest", price: 5.49, emoji: "🫘" },
+      ]
+    },
+    {
+      id: 3, name: "Taco Loco", emoji: "🌮", bg: "#1e1a10",
+      rating: 4.6, time: "15–25 min", fee: "Free", category: "🌮 Tacos",
+      badge: "FAST", tags: ["Mexican","Street food","Spicy"],
+      menu: [
+        { id: 301, name: "Al Pastor (×3)", desc: "Marinated pork, pineapple, cilantro", price: 11.99, emoji: "🌮" },
+        { id: 302, name: "Birria Tacos (×2)", desc: "Braised beef, consommé dip", price: 13.99, emoji: "🥩" },
+        { id: 303, name: "Guacamole & Chips", desc: "Fresh avocado, lime, jalapeño", price: 7.49, emoji: "🥑" },
+        { id: 304, name: "Horchata (L)", desc: "Rice milk, cinnamon, vanilla", price: 4.99, emoji: "🥛" },
+      ]
+    },
+    {
+      id: 4, name: "Stack House", emoji: "🍔", bg: "#1f1515",
+      rating: 4.7, time: "20–30 min", fee: "$0.99", category: "🍔 Burgers",
+      badge: "", tags: ["Smash burgers","American","Loaded"],
+      menu: [
+        { id: 401, name: "Classic Smash", desc: "Double patty, American cheese, pickles", price: 12.99, emoji: "🍔" },
+        { id: 402, name: "BBQ Bacon Stack", desc: "Smoked bacon, BBQ sauce, onion rings", price: 15.99, emoji: "🥓" },
+        { id: 403, name: "Crispy Fries", desc: "Sea salt, house seasoning", price: 4.99, emoji: "🍟" },
+        { id: 404, name: "Vanilla Shake", desc: "Thick & creamy, 500ml", price: 6.99, emoji: "🥤" },
+      ]
+    },
+    {
+      id: 5, name: "Green Bowl Co.", emoji: "🥗", bg: "#121f15",
+      rating: 4.5, time: "18–28 min", fee: "Free", category: "🥗 Healthy",
+      badge: "NEW", tags: ["Vegan","Organic","Low-cal"],
+      menu: [
+        { id: 501, name: "Power Bowl", desc: "Quinoa, kale, chickpeas, tahini", price: 13.49, emoji: "🥗" },
+        { id: 502, name: "Açaí Bowl", desc: "Granola, fresh berries, honey", price: 10.99, emoji: "🫐" },
+        { id: 503, name: "Green Detox Juice", desc: "Spinach, apple, ginger, lemon", price: 6.49, emoji: "🥬" },
+        { id: 504, name: "Avocado Toast", desc: "Sourdough, chili flakes, seeds", price: 9.99, emoji: "🥑" },
+      ]
+    },
+    {
+      id: 6, name: "Ramen Underground", emoji: "🍜", bg: "#1a1220",
+      rating: 4.8, time: "25–40 min", fee: "$1.49", category: "🍜 Noodles",
+      badge: "", tags: ["Japanese","Broth","Cozy"],
+      menu: [
+        { id: 601, name: "Tonkotsu Ramen", desc: "Pork broth, chashu, soft egg", price: 16.99, emoji: "🍜" },
+        { id: 602, name: "Spicy Miso Ramen", desc: "Red miso, corn, butter, tofu", price: 15.49, emoji: "🌶️" },
+        { id: 603, name: "Gyoza (×6)", desc: "Pan-fried, dipping sauce", price: 8.99, emoji: "🥟" },
+        { id: 604, name: "Matcha Latte", desc: "Ceremonial grade, oat milk", price: 5.99, emoji: "🍵" },
+      ]
+    },
+    {
+      id: 7, name: "Spice Garden", emoji: "🍛", bg: "#1f1510",
+      rating: 4.6, time: "30–45 min", fee: "$1.99", category: "🍛 Indian",
+      badge: "", tags: ["Indian","Curry","Vegetarian"],
+      menu: [
+        { id: 701, name: "Butter Chicken", desc: "Creamy tomato sauce, basmati rice", price: 15.99, emoji: "🍛" },
+        { id: 702, name: "Paneer Tikka", desc: "Spiced cottage cheese, mint chutney", price: 13.49, emoji: "🧀" },
+        { id: 703, name: "Garlic Naan (×3)", desc: "Buttery, clay oven baked", price: 5.99, emoji: "🫓" },
+        { id: 704, name: "Mango Lassi", desc: "Chilled yogurt, ripe mango", price: 4.99, emoji: "🥭" },
+      ]
+    },
+    {
+      id: 8, name: "Whisk & Crumb", emoji: "🧁", bg: "#1f1520",
+      rating: 4.9, time: "15–30 min", fee: "$0.99", category: "🧁 Desserts",
+      badge: "TOP RATED", tags: ["Bakery","Sweet","Artisan"],
+      menu: [
+        { id: 801, name: "Chocolate Lava Cake", desc: "Warm dark chocolate, vanilla ice cream", price: 9.99, emoji: "🍫" },
+        { id: 802, name: "NY Cheesecake Slice", desc: "Biscuit base, berry compote", price: 7.99, emoji: "🍰" },
+        { id: 803, name: "Croissant Box (×4)", desc: "Flaky, butter laminated", price: 11.99, emoji: "🥐" },
+        { id: 804, name: "Cold Brew Float", desc: "Espresso, vanilla gelato", price: 7.49, emoji: "☕" },
+      ]
+    },
+    {
+      id: 9, name: "Wok & Roll", emoji: "🥡", bg: "#1f102a",
+      rating: 4.7, time: "20–35 min", fee: "$1.49", category: "🥡 Asian",
+      badge: "", tags: ["Noodles","Chinese","Dim Sum"],
+      menu: [
+        { id: 901, name: "Kung Pao Chicken", desc: "Spiced chicken, peanuts, chili", price: 14.49, emoji: "🍗" },
+        { id: 902, name: "Dim Sum Platter", desc: "Pork dumplings, shrimp har gow", price: 12.99, emoji: "🥟" },
+        { id: 903, name: "Sweet & Sour Pork", desc: "Crispy pork, peppers, pineapple", price: 13.99, emoji: "🥩" },
+        { id: 904, name: "Peking Duck Bao", desc: "Steamed buns, hoisin, cucumber", price: 11.49, emoji: "🥖" },
+      ]
+    },
+    {
+      id: 10, name: "The Kebab Istana", emoji: "🍢", bg: "#2a2215",
+      rating: 4.8, time: "25–40 min", fee: "$2.99", category: "🍢 Kebab",
+      badge: "TOP RATED", tags: ["Middle Eastern","Halal","Grilled"],
+      menu: [
+        { id: 1001, name: "Chicken Shawarma", desc: "Spiced chicken, garlic whip, pickles", price: 12.49, emoji: "🌯" },
+        { id: 1002, name: "Hummus & Pita", desc: "Creamy chickpea puree, warm flatbread", price: 8.99, emoji: "🫓" },
+        { id: 1003, name: "Lamb Kofta", desc: "Minced skewers, saffron rice", price: 15.99, emoji: "🥩" },
+        { id: 1004, name: "Falafel Wrap", desc: "Crispy herb fritters, tahini sauce", price: 10.99, emoji: "🥙" },
+      ]
+    },
+    {
+      id: 11, name: "Le Bistro", emoji: "🥖", bg: "#151b2a",
+      rating: 4.9, time: "30–50 min", fee: "$3.99", category: "🧁 Desserts",
+      badge: "PREMIUM", tags: ["French","Fine Dining","Gourmet"],
+      menu: [
+        { id: 1101, name: "Coq au Vin", desc: "Braised chicken, red wine, mushrooms", price: 24.99, emoji: "🍗" },
+        { id: 1102, name: "French Onion Soup", desc: "Beef broth, Gruyère crouton", price: 11.99, emoji: "🥣" },
+        { id: 1103, name: "Crème Brûlée", desc: "Vanilla bean custard, caramelized sugar", price: 9.49, emoji: "🍮" },
+        { id: 1104, name: "Macaron Gift Box", desc: "Assorted French macarons (x6)", price: 14.99, emoji: "🧁" },
+      ]
+    },
+    {
+      id: 12, name: "La Dolce Vita", emoji: "🍝", bg: "#251c1a",
+      rating: 4.7, time: "25–35 min", fee: "$1.99", category: "🍝 Italian",
+      badge: "", tags: ["Pasta","Italian","Romantic"],
+      menu: [
+        { id: 1201, name: "Truffle Fettuccine", desc: "Creamy wild mushroom, truffle oil", price: 19.99, emoji: "🍝" },
+        { id: 1202, name: "Lasagna Classica", desc: "Bolognese, bechamel, parmigiano", price: 17.49, emoji: "🥘" },
+        { id: 1203, name: "Gnocchi Pesto", desc: "Potato pillows, basil pesto", price: 15.99, emoji: "🍃" },
+        { id: 1204, name: "Classic Tiramisu", desc: "Mascarpone, espresso, ladyfingers", price: 8.99, emoji: "🍰" },
+      ]
+    },
+    {
+      id: 13, name: "Coco Loco", emoji: "🥥", bg: "#10251f",
+      rating: 4.6, time: "10–20 min", fee: "Free", category: "🥤 Drinks",
+      badge: "FAST", tags: ["Smoothies","Juices","Cold drinks"],
+      menu: [
+        { id: 1301, name: "Pure Coconut Water", desc: "Fresh young coconut, served cold", price: 5.99, emoji: "🥥" },
+        { id: 1302, name: "Açaí Superfood Smoothie", desc: "Açaí, banana, almond milk, chia", price: 7.99, emoji: "🥤" },
+        { id: 1303, name: "Iced Matcha Coconut", desc: "Ceremonial matcha, sweet coconut milk", price: 6.99, emoji: "🍵" },
+        { id: 1304, name: "Tropical Dragon Punch", desc: "Dragonfruit, mango, passionfruit", price: 7.49, emoji: "🍹" },
+      ]
+    },
+    {
+      id: 14, name: "Steakhouse 72", emoji: "🥩", bg: "#2d1616",
+      rating: 4.9, time: "35–50 min", fee: "$4.99", category: "🍔 Burgers",
+      badge: "PREMIUM", tags: ["Steaks","Premium","Grill"],
+      menu: [
+        { id: 1401, name: "Ribeye Steak 400g", desc: "USDA Prime, garlic butter, asparagus", price: 34.99, emoji: "🥩" },
+        { id: 1402, name: "Truffle Mac & Cheese", desc: "Four-cheese blend, white truffle oil", price: 11.99, emoji: "🧀" },
+        { id: 1403, name: "Wagyu Smash Burger", desc: "Double wagyu patty, truffle mayo", price: 18.99, emoji: "🍔" },
+        { id: 1404, name: "Chocolate Soufflé", desc: "Warm baked soufflé, vanilla bean cream", price: 10.99, emoji: "🧁" },
+      ]
+    }
+  ]
+};
+
+// ── STATE ──
+let cart = [];
+let activeFilter = "All";
+let activeRestaurant = null;
+
+// ── RENDER HERO CARDS ──
+function renderHeroCards() {
+  const picks = [DB.restaurants[0], DB.restaurants[10], DB.restaurants[11], DB.restaurants[13]];
+  const el = document.getElementById('hero-visual');
+  el.innerHTML = picks.map(r => `
+    <div class="hero-card" onclick="openModal(${r.id})">
+      <div class="hero-emoji">${r.emoji}</div>
+      <h4>${r.name}</h4>
+      <span>⭐ ${r.rating} · ${r.time}</span>
+    </div>
+  `).join('');
+}
+
+// ── RENDER FILTER CHIPS ──
+function renderFilters() {
+  const el = document.getElementById('filters');
+  el.innerHTML = DB.categories.map(cat => `
+    <button class="filter-chip ${cat === activeFilter ? 'active' : ''}" onclick="setFilter('${cat}')">${cat}</button>
+  `).join('');
+}
+
+// ── RENDER RESTAURANT GRID ──
+function renderRestaurants() {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  let list = DB.restaurants;
+  if (activeFilter !== "All") list = list.filter(r => r.category === activeFilter);
+  if (query) list = list.filter(r =>
+    r.name.toLowerCase().includes(query) ||
+    r.tags.some(t => t.toLowerCase().includes(query)) ||
+    r.menu.some(m => m.name.toLowerCase().includes(query))
+  );
+
+  const el = document.getElementById('restaurant-grid');
+  if (list.length === 0) {
+    el.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0;font-size:.95rem;">No restaurants found. Try a different search.</div>`;
+    return;
+  }
+  el.innerHTML = list.map(r => `
+    <div class="restaurant-card" onclick="openModal(${r.id})">
+      <div class="restaurant-img" style="background:${r.bg};">
+        <span>${r.emoji}</span>
+        ${r.badge ? `<span class="restaurant-badge ${r.badge === 'NEW' ? 'new' : ''}">${r.badge}</span>` : ''}
+      </div>
+      <div class="restaurant-info">
+        <h3>${r.name}</h3>
+        <div class="restaurant-meta">
+          <span class="rating">⭐ ${r.rating}</span>
+          <span>🕒 ${r.time}</span>
+          <span>🚴 ${r.fee}</span>
+        </div>
+        <div class="tag-list">
+          ${r.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setFilter(cat) {
+  activeFilter = cat;
+  renderFilters();
+  renderRestaurants();
+}
+
+function clearFilter() {
+  document.getElementById('search-input').value = '';
+  activeFilter = "All";
+  renderFilters();
+  renderRestaurants();
+}
+
+function filterRestaurants() { renderRestaurants(); }
+
+// ── MODAL ──
+function openModal(id) {
+  activeRestaurant = DB.restaurants.find(r => r.id === id);
+  document.getElementById('modal-title').textContent = `${activeRestaurant.emoji} ${activeRestaurant.name}`;
+  document.getElementById('modal-meta').textContent = `⭐ ${activeRestaurant.rating}  ·  🕒 ${activeRestaurant.time}  ·  🚴 Delivery ${activeRestaurant.fee}`;
+  document.getElementById('menu-grid').innerHTML = activeRestaurant.menu.map(item => `
+    <div class="menu-item">
+      <div class="menu-item-info">
+        <h4>${item.emoji} ${item.name}</h4>
+        <p>${item.desc}</p>
+      </div>
+      <div class="menu-item-right">
+        <div class="menu-item-price">$${item.price.toFixed(2)}</div>
+        <button class="add-btn" onclick="addToCart(${id}, ${item.id})">+ Add</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// ── LOCATION SELECTOR ENGINE ──
+function openLocationModal() {
+  document.getElementById('location-modal').classList.add('open');
+}
+
+function closeLocationModal(e) {
+  if (e.target === document.getElementById('location-modal')) closeLocationModalDirect();
+}
+
+function closeLocationModalDirect() {
+  document.getElementById('location-modal').classList.remove('open');
+  document.getElementById('location-status').style.display = 'none';
+  
+  // Reset confirmation texts and hide buttons
+  isCheckoutConfirm = false;
+  document.getElementById('checkout-confirm-container').style.display = 'none';
+  document.querySelector('#location-modal h2').textContent = 'Select Delivery Location';
+  document.querySelector('#location-modal .modal-meta').textContent = 'Tell us where to send your delicious hot meal';
+}
+
+function autoGetLocation() {
+  const statusEl = document.getElementById('location-status');
+  statusEl.style.display = 'block';
+  statusEl.style.color = 'var(--muted)';
+  statusEl.textContent = '📍 Fetching live geolocation coordinates...';
+
+  if (!navigator.geolocation) {
+    statusEl.textContent = '❌ Geolocation is not supported by your browser.';
+    statusEl.style.color = 'var(--danger)';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      statusEl.textContent = '🔍 Reverse-geocoding coordinates via OpenStreetMap...';
+      
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`, {
+          headers: { 'Accept-Language': 'en', 'User-Agent': 'ZEST-Delivery-App' }
+        });
+        if (!response.ok) throw new Error('Geocoder failed');
+        const data = await response.json();
+        
+        let address = '';
+        if (data.address) {
+          const addr = data.address;
+          address = addr.road || addr.suburb || addr.neighbourhood || addr.city_district || '';
+          const city = addr.city || addr.town || addr.village || addr.state || '';
+          if (address && city) address += ', ' + city;
+          else address = city || data.display_name || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+        } else {
+          address = data.display_name || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+        }
+        
+        if (address.length > 35) address = address.substring(0, 32) + '...';
+
+        document.getElementById('nav-city').textContent = address;
+        statusEl.textContent = `✅ Live address resolved: ${address}`;
+        statusEl.style.color = 'var(--green)';
+        localStorage.setItem('zest-user-address', address);
+        renderCart();
+        
+        setTimeout(() => { closeLocationModalDirect(); }, 1400);
+      } catch (err) {
+        console.warn('Geocoder error:', err);
+        const mockAddresses = ["Champs-Élysées, Paris", "Shibuya Crossing, Tokyo", "Market St, San Francisco", "5th Ave, New York", "Regent Street, London"];
+        const randomAddr = mockAddresses[Math.floor(Math.random() * mockAddresses.length)];
+        document.getElementById('nav-city').textContent = randomAddr;
+        statusEl.textContent = `✅ Geolocation fallback: ${randomAddr}`;
+        statusEl.style.color = 'var(--green)';
+        localStorage.setItem('zest-user-address', randomAddr);
+        renderCart();
+        setTimeout(() => { closeLocationModalDirect(); }, 1400);
+      }
+    },
+    (error) => {
+      console.warn('Geolocation blocked/failed:', error);
+      const mockAddresses = ["Ocean Ave, Santa Monica", "Market St, San Francisco", "Broadway, New York", "Piccadilly Circus, London", "Roppongi Hills, Tokyo"];
+      const randomAddr = mockAddresses[Math.floor(Math.random() * mockAddresses.length)];
+      document.getElementById('nav-city').textContent = randomAddr;
+      statusEl.textContent = `✅ Geolocation fallback: ${randomAddr}`;
+      statusEl.style.color = 'var(--green)';
+      localStorage.setItem('zest-user-address', randomAddr);
+      renderCart();
+      setTimeout(() => { closeLocationModalDirect(); }, 1400);
+    },
+    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+  );
+}
+
+function saveManualAddress() {
+  const input = document.getElementById('manual-address-input');
+  const statusEl = document.getElementById('location-status');
+  let val = input.value.trim();
+  if (!val) {
+    statusEl.style.display = 'block';
+    statusEl.textContent = '⚠️ Please type a delivery address first.';
+    statusEl.style.color = 'var(--danger)';
+    return;
+  }
+  
+  if (val.length > 35) val = val.substring(0, 32) + '...';
+
+  document.getElementById('nav-city').textContent = val;
+  statusEl.style.display = 'block';
+  statusEl.textContent = `✅ Delivery address saved manually: ${val}`;
+  statusEl.style.color = 'var(--green)';
+  localStorage.setItem('zest-user-address', val);
+  renderCart();
+  
+  setTimeout(() => {
+    closeLocationModalDirect();
+    input.value = '';
+  }, 1400);
+}
+
+// ── FOOD CUSTOMIZER ENGINE ──
+let customizerTarget = null;
+
+function addToCart(restaurantId, itemId) {
+  const restaurant = DB.restaurants.find(r => r.id === restaurantId);
+  const item = restaurant.menu.find(m => m.id === itemId);
+  
+  customizerTarget = { restaurantId, item };
+  
+  // Set modal details
+  document.getElementById('cust-title').textContent = `${item.emoji} Customize ${item.name}`;
+  document.getElementById('cust-desc').textContent = item.desc;
+  
+  // Reset customization selections
+  document.getElementsByName('cust-size')[0].checked = true;
+  document.getElementById('cust-extra-cheese').checked = false;
+  document.getElementById('cust-extra-bacon').checked = false;
+  
+  updateCustomizerPrice();
+  
+  document.getElementById('cust-add-btn').onclick = function() {
+    confirmAddToCart();
+  };
+  
+  document.getElementById('customizer-modal').classList.add('open');
+}
+
+function updateCustomizerPrice() {
+  if (!customizerTarget) return;
+  const basePrice = customizerTarget.item.price;
+  let price = basePrice;
+  
+  const isLarge = document.querySelector('input[name="cust-size"]:checked').value === 'Large';
+  if (isLarge) price += 2.50;
+  
+  if (document.getElementById('cust-extra-cheese').checked) price += 1.50;
+  if (document.getElementById('cust-extra-bacon').checked) price += 2.00;
+  
+  document.getElementById('cust-total-price').textContent = `$${price.toFixed(2)}`;
+}
+
+function closeCustomizerModal(e) {
+  if (e.target === document.getElementById('customizer-modal')) closeCustomizerModalDirect();
+}
+
+function closeCustomizerModalDirect() {
+  document.getElementById('customizer-modal').classList.remove('open');
+  customizerTarget = null;
+}
+
+function confirmAddToCart() {
+  if (!customizerTarget) return;
+  const { restaurantId, item } = customizerTarget;
+  const restaurant = DB.restaurants.find(r => r.id === restaurantId);
+  
+  const size = document.querySelector('input[name="cust-size"]:checked').value;
+  const extraCheese = document.getElementById('cust-extra-cheese').checked;
+  const extraBacon = document.getElementById('cust-extra-bacon').checked;
+  
+  let optionsText = `Size: ${size}`;
+  let additionalPrice = 0;
+  if (size === 'Large') additionalPrice += 2.50;
+  if (extraCheese) {
+    optionsText += ', +Cheese';
+    additionalPrice += 1.50;
+  }
+  if (extraBacon) {
+    optionsText += ', +Bacon';
+    additionalPrice += 2.00;
+  }
+  
+  const finalPrice = item.price + additionalPrice;
+  const cartItemKey = `${item.id}-${size}-${extraCheese ? 'y' : 'n'}-${extraBacon ? 'y' : 'n'}`;
+  
+  const existing = cart.find(c => c.cartKey === cartItemKey);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({
+      ...item,
+      cartKey: cartItemKey,
+      price: finalPrice,
+      qty: 1,
+      restaurantName: restaurant.name,
+      customText: optionsText
+    });
+  }
+  
+  renderCart();
+  bumpBadge();
+  closeCustomizerModalDirect();
+}
+
+// ── CART SIDEBAR ENGINE ──
+function changeQty(cartKey, delta) {
+  const idx = cart.findIndex(c => c.cartKey === cartKey);
+  if (idx === -1) return;
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  renderCart();
+  updateBadge();
+}
+
+function renderCart() {
+  const el = document.getElementById('cart-items');
+  const summary = document.getElementById('cart-summary');
+  updateBadge();
+
+  if (cart.length === 0) {
+    el.innerHTML = `<div class="cart-empty"><span>🍽️</span>Your cart is empty.<br>Add some delicious items!</div>`;
+    summary.innerHTML = '';
+    return;
+  }
+
+  el.innerHTML = cart.map(item => `
+    <div class="cart-row">
+      <span class="cart-row-emoji">${item.emoji}</span>
+      <div class="cart-row-info">
+        <h4 style="font-size:0.88rem; font-weight:500;">${item.name}</h4>
+        ${item.customText ? `<span style="font-size:0.75rem; color:var(--accent2); display:block; margin:2px 0;">${item.customText}</span>` : ''}
+        <span style="font-size:0.78rem; color:var(--muted);">${item.restaurantName}</span>
+      </div>
+      <div class="cart-qty">
+        <button class="qty-btn" onclick="changeQty('${item.cartKey}', -1)">−</button>
+        <span style="font-size:.88rem;min-width:16px;text-align:center">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty('${item.cartKey}', 1)">+</button>
+      </div>
+      <span class="cart-row-price">$${(item.price * item.qty).toFixed(2)}</span>
+    </div>
+  `).join('');
+
+  const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const delivery = 1.99;
+  const tax = subtotal * 0.08;
+  const total = subtotal + delivery + tax;
+
+  const currentAddress = localStorage.getItem('zest-user-address') || document.getElementById('nav-city').textContent || 'San Francisco, CA';
+
+  summary.innerHTML = `
+    <!-- Delivery Address Card -->
+    <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; text-align: left;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 0.72rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Delivery Address</span>
+        <div style="display: flex; gap: 8px;">
+          <a onclick="autoGetLocation()" style="font-size: 0.72rem; color: var(--accent2); cursor: pointer; text-decoration: none; font-weight: 500;">📍 Auto-Locate</a>
+          <span style="color: var(--border); font-size: 0.72rem;">|</span>
+          <a onclick="openLocationModal()" style="font-size: 0.72rem; color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 500;">✏️ Edit Address</a>
+        </div>
+      </div>
+      <div style="font-size: 0.85rem; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 6px;">
+        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 290px;" id="cart-delivery-address">${currentAddress}</span>
+      </div>
+    </div>
+
+    <div class="summary-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+    <div class="summary-row"><span>Delivery</span><span>$${delivery.toFixed(2)}</span></div>
+    <div class="summary-row"><span>Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
+    <div class="summary-row total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+    <button class="checkout-btn" onclick="placeOrder()">Place Order →</button>
+  `;
+}
+
+function updateBadge() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('cart-badge').textContent = total;
+}
+
+function bumpBadge() {
+  updateBadge();
+  const badge = document.getElementById('cart-badge');
+  badge.classList.remove('bump');
+  void badge.offsetWidth;
+  badge.classList.add('bump');
+}
+
+function toggleCart() {
+  document.getElementById('cart-sidebar').classList.toggle('open');
+}
+
+// ── CHECKOUT ──
+let isCheckoutConfirm = false;
+
+function placeOrder() {
+  if (cart.length === 0) return;
+  isCheckoutConfirm = true;
+  
+  // Show confirmation container inside the Location Modal
+  document.getElementById('checkout-confirm-container').style.display = 'block';
+  
+  // Change the header titles inside Location Modal to match checkout context
+  document.querySelector('#location-modal h2').textContent = 'Confirm Delivery Address';
+  document.querySelector('#location-modal .modal-meta').textContent = 'Verify, locate, or enter your delivery address below before ordering';
+  
+  openLocationModal();
+}
+
+function executePlaceOrder() {
+  cart = [];
+  renderCart();
+  closeLocationModalDirect();
+  
+  // Close any active restaurant menus and cart sidebars
+  closeModalDirect();
+  document.getElementById('cart-sidebar').classList.remove('open');
+  
+  startTracking();
+}
+
+// ── TRACKING ENGINE ──
+let trackInterval = null;
+let etaInterval  = null;
+let trackPhase   = 0; 
+let etaSeconds   = 28 * 60;
+
+function bezierPoint(t) {
+  const p0 = {x:80,  y:60};
+  const p1 = {x:200, y:60};
+  const p2 = {x:240, y:200};
+  const p3 = {x:440, y:200};
+  const mt = 1 - t;
+  return {
+    x: mt*mt*mt*p0.x + 3*mt*mt*t*p1.x + 3*mt*t*t*p2.x + t*t*t*p3.x,
+    y: mt*mt*mt*p0.y + 3*mt*mt*t*p1.y + 3*mt*t*t*p2.y + t*t*t*p3.y
+  };
+}
+
+const TOTAL_PATH_LEN = 430; 
+
+function startTracking() {
+  trackPhase = 0;
+  etaSeconds = 28 * 60;
+  clearInterval(trackInterval);
+  clearInterval(etaInterval);
+
+  const rname = activeRestaurant ? activeRestaurant.name : 'Restaurant';
+  document.getElementById('rest-pin-label').textContent = rname;
+  
+  const userAddr = localStorage.getItem('zest-user-address') || document.getElementById('nav-city').textContent || 'Your Location';
+  document.getElementById('dest-pin-label').textContent = userAddr;
+
+  // reset UI
+  setTrackStep(0);
+  updateETA(etaSeconds);
+  positionRider(0);
+  document.getElementById('route-progress').setAttribute('stroke-dasharray','0,9999');
+
+  document.getElementById('tracking-overlay').classList.add('open');
+
+  // Phase timeline (ms): confirmed→preparing=4s, preparing→on-the-way=8s, on-the-way→delivered=20s
+  const phases = [
+    { delay: 0,     heading: 'Order Confirmed!',  sub: 'Your food is being prepared with care' },
+    { delay: 4000,  heading: 'Preparing Your Order', sub: 'The chef is working their magic 👨‍🍳' },
+    { delay: 12000, heading: 'Rider On the Way!',  sub: 'Marcus is heading to your location 🛵' },
+    { delay: 32000, heading: '🎉 Delivered!',      sub: 'Enjoy your meal! Rate your experience.' },
+  ];
+
+  phases.forEach(({ delay, heading, sub }, i) => {
+    setTimeout(() => {
+      trackPhase = i;
+      setTrackStep(i);
+      document.getElementById('track-status-heading').textContent = heading;
+      document.getElementById('track-status-sub').textContent = sub;
+    }, delay);
+  });
+
+  // Rider movement: only during "on the way" phase (phase 2)
+  // Animate from t=0 to t=1 over 20 seconds starting at 12s
+  const rideStart = 12000;
+  const rideDuration = 20000;
+  let rideTimer = null;
+
+  setTimeout(() => {
+    const start = Date.now();
+    rideTimer = setInterval(() => {
+      const elapsed = Date.now() - start;
+      const t = Math.min(elapsed / rideDuration, 1);
+      positionRider(t);
+      // animate progress line
+      const drawn = Math.round(t * TOTAL_PATH_LEN);
+      document.getElementById('route-progress').setAttribute('stroke-dasharray', `${drawn},9999`);
+      if (t >= 1) clearInterval(rideTimer);
+    }, 50);
+    trackInterval = rideTimer;
+  }, rideStart);
+
+  // ETA countdown
+  etaInterval = setInterval(() => {
+    etaSeconds = Math.max(0, etaSeconds - 1);
+    updateETA(etaSeconds);
+    if (etaSeconds === 0) clearInterval(etaInterval);
+  }, 1000);
+}
+
+function positionRider(t) {
+  const dot = document.getElementById('rider-dot');
+  const map = document.getElementById('track-map');
+  const mapW = map.offsetWidth  || 560;
+  const mapH = map.offsetHeight || 260;
+  const svgW = 560, svgH = 260;
+
+  const p = bezierPoint(t);
+  // Convert SVG coords to map pixel coords
+  const px = (p.x / svgW) * mapW;
+  const py = (p.y / svgH) * mapH;
+
+  dot.style.left = (px - 18) + 'px';
+  dot.style.top  = (py - 18) + 'px';
+}
+
+function updateETA(secs) {
+  const m = Math.ceil(secs / 60);
+  document.getElementById('eta-min').textContent = m;
+}
+
+function setTrackStep(phase) {
+  // steps: 0=confirmed,1=preparing,2=on-the-way,3=delivered
+  for (let i = 0; i <= 3; i++) {
+    const step = document.getElementById(`step-${i}`);
+    step.classList.remove('done','active');
+    if (i < phase) step.classList.add('done');
+    else if (i === phase) step.classList.add('active');
+  }
+  for (let i = 0; i <= 2; i++) {
+    const line = document.getElementById(`line-${i}`);
+    line.classList.toggle('done', i < phase);
+  }
+  // Update step dot icons for done
+  const icons = ['✓','✓','✓','✓'];
+  const activeIcons = ['🎉','🍳','🛵','🏠'];
+  for (let i = 0; i <= 3; i++) {
+    const dot = document.querySelector(`#step-${i} .step-dot`);
+    if (i < phase) dot.textContent = '✓';
+    else if (i === phase) dot.textContent = activeIcons[i];
+    else dot.textContent = ['🎉','🍳','🛵','🏠'][i];
+  }
+}
+
+function closeTracking() {
+  document.getElementById('tracking-overlay').classList.remove('open');
+  clearInterval(trackInterval);
+  clearInterval(etaInterval);
+}
+
+// ── INIT ──
+const savedAddress = localStorage.getItem('zest-user-address');
+if (savedAddress) {
+  document.getElementById('nav-city').textContent = savedAddress;
+}
+renderHeroCards();
+renderFilters();
+renderRestaurants();
+renderCart();
+</script>
+</body>
+</html>
