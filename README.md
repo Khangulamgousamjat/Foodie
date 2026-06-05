@@ -231,34 +231,6 @@ Every push to `main` auto-deploys to Vercel.
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to get started:
-
-```bash
-# 1. Fork the repository
-# 2. Create your feature branch
-git checkout -b feature/amazing-feature
-
-# 3. Make your changes to index.html
-
-# 4. Commit your changes
-git commit -m "Add amazing feature"
-
-# 5. Push to your branch
-git push origin feature/amazing-feature
-
-# 6. Open a Pull Request on GitHub
-```
-
-**Ideas for contributions:**
-- Add more restaurants or menu items
-- Improve mobile responsiveness
-- Add new food categories
-- Enhance animations
-- Fix bugs or improve performance
-
----
 
 ## 👨‍💻 Author
 
@@ -272,11 +244,10 @@ git push origin feature/amazing-feature
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
----
 
 <div align="center">
 
-**Made with ❤️ and 🍕 by Khangulamgousamjat**
+**Made by Gous khan**
 
 ⭐ **Star this repo if you like it!** ⭐
 
