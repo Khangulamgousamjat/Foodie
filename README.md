@@ -111,17 +111,6 @@ Foodie-main/
 └── LICENSE             # ⚖️ MIT License
 ```
 
----
-
-
-## 🗺️ Roadmap
-
-- [x] 35+ restaurants with full menus
-- [x] Live GPS location detection
-- [x] Animated order tracking
-- [x] Item customizer (size, extras)
-- [x] Persistent cart & address
-
 
 ## ⚖️ License
 
