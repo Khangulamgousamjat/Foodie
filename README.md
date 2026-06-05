@@ -18,24 +18,6 @@
 
 </div>
 
----
-
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Live Demo](#-live-demo)
-- [Features](#-features)
-- [Food Categories](#-food-categories)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
-- [Deployment](#-deployment)
-- [Screenshots](#-screenshots)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
-
----
 
 ## 🌟 Overview
 
@@ -43,7 +25,6 @@
 
 Built entirely with **vanilla HTML, CSS, and JavaScript** — zero frameworks, zero dependencies, zero build steps. Just open and enjoy.
 
----
 
 ## 🚀 Live Demo
 
@@ -137,81 +118,6 @@ Foodie-main/
 
 ---
 
-## 🚀 Getting Started
-
-### Option 1 — Just Open It
-Since this is a pure HTML app, simply open `index.html` in any modern browser:
-
-```bash
-# Clone the repository
-git clone https://github.com/Khangulamgousamjat/Foodie.git
-
-# Navigate into the project
-cd Foodie
-
-# Open in browser (Windows)
-start index.html
-
-# Open in browser (macOS)
-open index.html
-
-# Open in browser (Linux)
-xdg-open index.html
-```
-
-### Option 2 — Local Server (Recommended)
-Run a local dev server to avoid any CORS issues with geolocation:
-
-```bash
-# Using Python
-python -m http.server 8080
-
-# Using Node.js (npx)
-npx serve .
-
-# Using VS Code
-# Install "Live Server" extension → Right-click index.html → Open with Live Server
-```
-
-Then open **[http://localhost:8080](http://localhost:8080)** in your browser.
-
----
-
-## 🌐 Deployment
-
-This app is deployed on **Vercel** with automatic GitHub integration.
-
-### Deploy Your Own Fork
-
-1. **Fork** this repository on GitHub
-2. Go to **[vercel.com](https://vercel.com)** → New Project
-3. Import your forked repository
-4. Configure settings:
-   - **Framework Preset**: `Other`
-   - **Root Directory**: `./`
-   - **Output Directory**: *(leave empty)*
-5. Click **Deploy** ✅
-
-Every push to `main` auto-deploys to Vercel.
-
----
-
-## 📱 How to Use
-
-| Action | How |
-|---|---|
-| Browse restaurants | Scroll the home page |
-| Filter by cuisine | Click a category chip |
-| Search for food | Type in the search bar |
-| View menu | Click any restaurant card |
-| Add to cart | Click **+ Add** on any menu item |
-| Customize item | Size & extras selector pops up |
-| View cart | Click 🛒 Cart in the navbar |
-| Set location | Click your city name in navbar |
-| Place order | Click **Place Order →** in cart |
-| Track order | Tracking overlay appears automatically |
-
----
 
 ## 🗺️ Roadmap
 
@@ -229,16 +135,6 @@ Every push to `main` auto-deploys to Vercel.
 - [ ] PWA (Progressive Web App) support
 - [ ] Real payment gateway integration
 
----
-
-
-## 👨‍💻 Author
-
-**Khangulamgousamjat**
-
-[![GitHub](https://img.shields.io/badge/GitHub-@Khangulamgousamjat-181717?style=flat-square&logo=github)](https://github.com/Khangulamgousamjat)
-
----
 
 ## ⚖️ License
 
