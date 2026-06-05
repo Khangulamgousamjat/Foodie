@@ -215,9 +215,22 @@
     box-shadow: 0 16px 40px rgba(0,0,0,.5);
   }
   .restaurant-img {
-    height: 160px; font-size: 5rem;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
+    height: 185px; position: relative; overflow: hidden; background: #111;
+  }
+  .restaurant-img img {
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition: transform .45s ease;
+  }
+  .restaurant-card:hover .restaurant-img img { transform: scale(1.08); }
+  .restaurant-img-overlay {
+    position:absolute; inset:0;
+    background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 55%);
+    pointer-events:none; z-index:1;
+  }
+  .restaurant-badge { z-index:2; }
+  .menu-item-img {
+    width:88px; height:68px; border-radius:10px;
+    object-fit:cover; flex-shrink:0; margin-right:14px; background:#222;
   }
   .restaurant-badge {
     position: absolute; top: 12px; left: 12px;
@@ -1149,7 +1162,95 @@ function renderFilters() {
   `).join('');
 }
 
-// ── RENDER RESTAURANT GRID ──
+
+// ── FOOD IMAGE MAP (120+ keywords -> real Unsplash 4K photos) ──
+function getFoodImage(name) {
+  const n = (name || '').toLowerCase();
+  const U = 'https://images.unsplash.com/photo-';
+  const pics = [
+    [['pizza','margherita','diavola','pepperoni','quattro','cheese burst','stuffed crust'], U+'1513104890138-7c749659a591?w=600&h=400&fit=crop&q=85'],
+    [['burger','smash','cheeseburger','wagyu burger','double patty'], U+'1568901346375-23c9450c58cd?w=600&h=400&fit=crop&q=85'],
+    [['chicken burger','crispy chicken sandwich'], U+'1606755962773-d324e0a13086?w=600&h=400&fit=crop&q=85'],
+    [['fries','chips','poutine','loaded fries','curly','waffle fries','masala fries','dirty fries'], U+'1573080496219-bb964701c2d0?w=600&h=400&fit=crop&q=85'],
+    [['nachos','cheese fries','potato skin'], U+'1573080496219-bb964701c2d0?w=600&h=400&fit=crop&q=85'],
+    [['hot dog','corn dog'], U+'1568901346375-23c9450c58cd?w=600&h=400&fit=crop&q=85'],
+    [['onion ring'], U+'1568901346375-23c9450c58cd?w=600&h=400&fit=crop&q=85'],
+    [['milkshake','shake','cold brew float'], U+'1572490122747-3a5c9abdab62?w=600&h=400&fit=crop&q=85'],
+    [['wings','buffalo wing','honey garlic','ghost pepper wing'], U+'1527477396000-e27163b481c2?w=600&h=400&fit=crop&q=85'],
+    [['butter chicken','murgh makhani'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
+    [['biryani','dum biryani','gosht biryani'], U+'1596797038530-2c107229654b?w=600&h=400&fit=crop&q=85'],
+    [['paneer tikka','shahi paneer','palak paneer','paneer'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
+    [['dal makhani','dal','lentil','rajma'], U+'1547592166-23ac45744acd?w=600&h=400&fit=crop&q=85'],
+    [['naan','roti','paratha','kulcha','bhature','bread'], U+'1565557623262-b51ff2ad5c0f?w=600&h=400&fit=crop&q=85'],
+    [['samosa'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
+    [['dosa','masala dosa','uttapam'], U+'1630383249896-425f7b34b7b1?w=600&h=400&fit=crop&q=85'],
+    [['idli','medu vada','vada'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
+    [['pani puri','gol gappa','bhel puri','chaat','aloo tikki','dahi papdi','raj kachori','samosa chaat'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
+    [['chole','pindi chole'], U+'1567188040759-fb8a883dc6d6?w=600&h=400&fit=crop&q=85'],
+    [['vada pav','pav bhaji','misal pav','keema pav'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
+    [['lassi','mango lassi','chaas','buttermilk'], U+'1571091718767-18b5b1457add?w=600&h=400&fit=crop&q=85'],
+    [['gulab jamun','rasgulla','jalebi','halwa','barfi','ladoo','firni','payasam','shrikhand','mishti doi'], U+'1562077772-3bdade8d4b18?w=600&h=400&fit=crop&q=85'],
+    [['kulfi','malai kulfi'], U+'1488900128323-21503983d706?w=600&h=400&fit=crop&q=85'],
+    [['haleem'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
+    [['tandoori chicken','tandoor'], U+'1599487488170-d11ec9c081dc?w=600&h=400&fit=crop&q=85'],
+    [['kebab','seekh kebab','kofta','adana','iskender','galouti'], U+'1544025162-d76538b2a681?w=600&h=400&fit=crop&q=85'],
+    [['chai','masala chai','cutting chai','filter coffee','irani chai','teh tarik'], U+'1556742049-0cfed4f6a45d?w=600&h=400&fit=crop&q=85'],
+    [['sushi','nigiri','sashimi','maki','rainbow roll','dragon roll','spicy tuna'], U+'1553621042-f6e147245754?w=600&h=400&fit=crop&q=85'],
+    [['ramen','tonkotsu','miso ramen','tantanmen'], U+'1569050467447-ce54b3bbc37d?w=600&h=400&fit=crop&q=85'],
+    [['gyoza','dumpling','dim sum','har gow','wonton','spring roll','char siu'], U+'1563245372-f21724e3856d?w=600&h=400&fit=crop&q=85'],
+    [['edamame','miso soup'], U+'1553621042-f6e147245754?w=600&h=400&fit=crop&q=85'],
+    [['matcha','green tea latte'], U+'1517723368363-cc7b36ab5c6b?w=600&h=400&fit=crop&q=85'],
+    [['pad thai','thai noodle','singapore noodle','char kway teow','laksa','japchae','glass noodle'], U+'1562802378-063ec186a863?w=600&h=400&fit=crop&q=85'],
+    [['thai curry','green curry','massaman','red curry'], U+'1569596082827-c0ce8923c0e8?w=600&h=400&fit=crop&q=85'],
+    [['mango sticky rice'], U+'1546039907-7fa05f864c02?w=600&h=400&fit=crop&q=85'],
+    [['tom yum'], U+'1569596082827-c0ce8923c0e8?w=600&h=400&fit=crop&q=85'],
+    [['bibimbap','korean rice','tteokbokki','japchae'], U+'1590301157890-4810ed352733?w=600&h=400&fit=crop&q=85'],
+    [['korean fried chicken'], U+'1527477396000-e27163b481c2?w=600&h=400&fit=crop&q=85'],
+    [['fried rice','egg fried rice','hainanese chicken rice'], U+'1603133872878-684f208fb84b?w=600&h=400&fit=crop&q=85'],
+    [['kung pao','sweet sour','mapo tofu'], U+'1563245372-f21724e3856d?w=600&h=400&fit=crop&q=85'],
+    [['peking duck'], U+'1544025162-d76538b2a681?w=600&h=400&fit=crop&q=85'],
+    [['shawarma','doner','chicken doner','beef shawarma','kathi roll','wrap'], U+'1529193591184-b1d58069ecdd?w=600&h=400&fit=crop&q=85'],
+    [['falafel'], U+'1541014283-3b5a1e8a065a?w=600&h=400&fit=crop&q=85'],
+    [['hummus','pita'], U+'1541014283-3b5a1e8a065a?w=600&h=400&fit=crop&q=85'],
+    [['baklava'], U+'1598511453168-c00a2478b3f5?w=600&h=400&fit=crop&q=85'],
+    [['knafeh','kunafa'], U+'1562077772-3bdade8d4b18?w=600&h=400&fit=crop&q=85'],
+    [['taco','al pastor','birria'], U+'1565299585323-38d6b0865b47?w=600&h=400&fit=crop&q=85'],
+    [['churro'], U+'1488900128323-21503983d706?w=600&h=400&fit=crop&q=85'],
+    [['guacamole','avocado'], U+'1523049673857-eb18f1d7b578?w=600&h=400&fit=crop&q=85'],
+    [['pasta','fettuccine','spaghetti','penne','carbonara','arrabbiata','cacio e pepe'], U+'1563379926898-05f4575a45d8?w=600&h=400&fit=crop&q=85'],
+    [['lasagna','lasagne'], U+'1481931098730-318b6f776db0?w=600&h=400&fit=crop&q=85'],
+    [['gnocchi'], U+'1476124369491-e7adaf787f64?w=600&h=400&fit=crop&q=85'],
+    [['tiramisu'], U+'1571877227200-a0d98ea607e9?w=600&h=400&fit=crop&q=85'],
+    [['panna cotta','creme brulee','custard'], U+'1571877227200-a0d98ea607e9?w=600&h=400&fit=crop&q=85'],
+    [['croissant','macaron'], U+'1568702846914-96b305d2aaeb?w=600&h=400&fit=crop&q=85'],
+    [['garlic bread','focaccia'], U+'1565557623262-b51ff2ad5c0f?w=600&h=400&fit=crop&q=85'],
+    [['chocolate lava','brownie','fudge','lava cake'], U+'1470124182917-cc6e71b22ecc?w=600&h=400&fit=crop&q=85'],
+    [['cheesecake','ny cheesecake'], U+'1559181567-c3190ef39db1?w=600&h=400&fit=crop&q=85'],
+    [['ice cream','sundae','gelato','banana split','scoop'], U+'1563805042-7684c019e1cb?w=600&h=400&fit=crop&q=85'],
+    [['waffle','belgian waffle'], U+'1484723091739-30a097e8f929?w=600&h=400&fit=crop&q=85'],
+    [['crepe','nutella crepe'], U+'1519676867240-d03521be7513?w=600&h=400&fit=crop&q=85'],
+    [['cookie','cookie dough'], U+'1499636757-a2d5088faa1e?w=600&h=400&fit=crop&q=85'],
+    [['donut','doughnut'], U+'1488900128323-21503983d706?w=600&h=400&fit=crop&q=85'],
+    [['bubble tea','boba','taro','milk tea'], U+'1558618666-fcd25c85cd64?w=600&h=400&fit=crop&q=85'],
+    [['coconut water','coconut'], U+'1546039907-7fa05f864c02?w=600&h=400&fit=crop&q=85'],
+    [['smoothie','acai','juice','lemonade','punch'], U+'1544145945-f90425340c7e?w=600&h=400&fit=crop&q=85'],
+    [['coffee','espresso','cappuccino','latte'], U+'1517723368363-cc7b36ab5c6b?w=600&h=400&fit=crop&q=85'],
+    [['steak','ribeye','brisket'], U+'1546833999-b9f581a1996d?w=600&h=400&fit=crop&q=85'],
+    [['ribs','pulled pork','bbq'], U+'1529692236671-f1f6cf9683ba?w=600&h=400&fit=crop&q=85'],
+    [['salmon','fish','seafood','lobster','prawn','shrimp','calamari','clam','crab'], U+'1565680018434-b513d5e5fd47?w=600&h=400&fit=crop&q=85'],
+    [['power bowl','quinoa bowl','acai bowl','rice bowl','salad'], U+'1512621776951-a57141f2eefd?w=600&h=400&fit=crop&q=85'],
+    [['avocado toast','toast'], U+'1541014283-3b5a1e8a065a?w=600&h=400&fit=crop&q=85'],
+    [['soup','chowder','broth'], U+'1569596082827-c0ce8923c0e8?w=600&h=400&fit=crop&q=85'],
+    [['sandwich','sub','club'], U+'1529193591184-b1d58069ecdd?w=600&h=400&fit=crop&q=85'],
+    [['bhajiya','fritter','pakoda'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
+    [['mozzarella stick','popcorn chicken','fried chicken'], U+'1527477396000-e27163b481c2?w=600&h=400&fit=crop&q=85'],
+  ];
+  for (const [keys, url] of pics) {
+    if (keys.some(k => n.includes(k))) return url;
+  }
+  return U+'1504674900247-0877df9cc836?w=600&h=400&fit=crop&q=80';
+}
+
 function renderRestaurants() {
   const query = document.getElementById('search-input').value.toLowerCase();
   let list = DB.restaurants;
@@ -1167,8 +1268,10 @@ function renderRestaurants() {
   }
   el.innerHTML = list.map(r => `
     <div class="restaurant-card" onclick="openModal(${r.id})">
-      <div class="restaurant-img" style="background:${r.bg};">
-        <span>${r.emoji}</span>
+      <div class="restaurant-img">
+        <img src="${r.img || getFoodImage(r.name)}" alt="${r.name}" loading="lazy"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop&q=80'">
+        <div class="restaurant-img-overlay"></div>
         ${r.badge ? `<span class="restaurant-badge ${r.badge === 'NEW' ? 'new' : ''}">${r.badge}</span>` : ''}
       </div>
       <div class="restaurant-info">
