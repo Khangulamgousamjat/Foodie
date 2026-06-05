@@ -4,9 +4,7 @@
 
 **A premium, fully-featured food delivery web application built with pure HTML, CSS & JavaScript.**
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-foodie--gk.vercel.app-orange?style=for-the-badge)](https://foodie-gk.vercel.app)
 [![GitHub](https://img.shields.io/badge/GitHub-Khangulamgousamjat%2FFoodie-181717?style=for-the-badge&logo=github)](https://github.com/Khangulamgousamjat/Foodie)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 <br/>
