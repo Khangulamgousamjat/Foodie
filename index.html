@@ -146,7 +146,16 @@
   .hero-card:hover { transform: scale(1.03); }
   .hero-card:nth-child(2) { margin-top: 24px; }
   .hero-card:nth-child(4) { margin-top: -24px; }
-  .hero-emoji { font-size: 2.5rem; margin-bottom: 10px; }
+  .hero-img-container {
+    width: 50px; height: 50px; border-radius: 12px;
+    overflow: hidden; margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface);
+  }
+  .hero-img-container img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
   .hero-card h4 { font-size: .9rem; font-weight: 500; margin-bottom: 4px; }
   .hero-card span { font-size: .8rem; color: var(--accent); font-weight: 500; }
 
@@ -621,22 +630,23 @@
     .tracking-panel { border-radius: 20px; }
   }
 
-  /* ── AUTHENTICATION MODAL & PROFILE STYLES ── */
+  /* ── AUTHENTICATION MODAL & PROFILE STYLES (ZEST DARK UI) ── */
   .auth-backdrop {
     position: fixed; inset: 0; z-index: 500;
-    background: rgba(0,0,0,.8); backdrop-filter: blur(10px);
+    background: rgba(0,0,0,.85); backdrop-filter: blur(14px);
     display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none; transition: opacity .3s;
   }
   .auth-backdrop.open { opacity: 1; pointer-events: all; }
   .auth-modal-card {
-    background: #ffffff;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 28px;
     width: 90%; max-width: 900px;
     height: 600px;
     display: flex;
     overflow: hidden;
-    box-shadow: 0 24px 60px rgba(0,0,0,.6);
+    box-shadow: 0 24px 60px rgba(0,0,0,.8);
     transform: scale(.95) translateY(20px);
     transition: transform .35s cubic-bezier(.22,1,.36,1);
   }
@@ -652,17 +662,18 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    border-right: 1px solid var(--border);
   }
   .auth-left::before {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 100%);
+    background: linear-gradient(to top, rgba(15,13,10,0.95) 0%, rgba(15,13,10,0.3) 100%);
     z-index: 1;
   }
   .auth-left-content {
     position: relative;
     z-index: 2;
-    color: #ffffff;
+    color: var(--text);
     text-align: left;
   }
   .auth-left-tag {
@@ -683,11 +694,11 @@
     line-height: 1.1;
     margin-bottom: 10px;
     letter-spacing: 1.5px;
-    color: #ffffff;
+    color: var(--text);
   }
   .auth-left p {
     font-size: 0.9rem;
-    color: #dddddd;
+    color: var(--muted);
     line-height: 1.5;
     margin-bottom: 20px;
   }
@@ -702,8 +713,8 @@
   
   .auth-right {
     width: 58%;
-    background: #fcfcfc;
-    color: #1a1714;
+    background: var(--surface);
+    color: var(--text);
     padding: 40px 48px;
     display: flex;
     flex-direction: column;
@@ -714,17 +725,17 @@
   .auth-close-btn {
     position: absolute;
     top: 20px; right: 20px;
-    background: #f0f0f0; border: none;
-    color: #666; cursor: pointer;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); cursor: pointer;
     width: 32px; height: 32px; border-radius: 50%;
     font-size: 1rem; display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, border-color 0.2s;
   }
-  .auth-close-btn:hover { background: #e0e0e0; color: #111; }
+  .auth-close-btn:hover { background: var(--border); border-color: var(--accent); }
   
   .auth-header {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
   .auth-brand {
     font-family: 'Bebas Neue', sans-serif;
@@ -740,42 +751,7 @@
   .auth-brand span { color: var(--accent2); }
   .auth-subtitle {
     font-size: 0.85rem;
-    color: #666;
-  }
-  
-  .auth-toggle-container {
-    background: #eef0f2;
-    border-radius: 50px;
-    padding: 4px;
-    display: flex;
-    position: relative;
-    margin-bottom: 24px;
-    cursor: pointer;
-  }
-  .auth-toggle-pill {
-    position: absolute;
-    top: 4px; bottom: 4px; left: 4px;
-    width: calc(50% - 4px);
-    background: #ffffff;
-    border-radius: 50px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: 1;
-  }
-  .auth-toggle-btn {
-    flex: 1;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #666;
-    position: relative;
-    z-index: 2;
-    transition: color 0.3s;
-    user-select: none;
-  }
-  .auth-toggle-btn.active {
-    color: #1a1714;
+    color: var(--muted);
   }
   
   .auth-form-view {
@@ -796,7 +772,7 @@
   .auth-input-group label {
     font-size: 0.78rem;
     font-weight: 600;
-    color: #444;
+    color: var(--text);
     text-align: left;
   }
   .auth-input-wrapper {
@@ -807,15 +783,15 @@
   .auth-input-icon-left {
     position: absolute;
     left: 14px;
-    color: #888;
+    color: var(--muted);
     font-size: 0.95rem;
     pointer-events: none;
   }
   .auth-input {
     width: 100%;
-    background: #f5f7f8;
-    border: 1px solid #e0e0e0;
-    color: #111;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
     font-family: 'DM Sans', sans-serif;
     font-size: 0.9rem;
     padding: 12px 14px 12px 38px;
@@ -825,13 +801,13 @@
   }
   .auth-input:focus {
     border-color: var(--accent);
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(244,124,43,0.1);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(244,124,43,0.15);
   }
   .auth-input-password-toggle {
     position: absolute;
     right: 14px;
-    color: #888;
+    color: var(--muted);
     font-size: 1rem;
     cursor: pointer;
     background: none;
@@ -841,7 +817,7 @@
     align-items: center;
   }
   .auth-input-password-toggle:hover {
-    color: #444;
+    color: var(--text);
   }
   
   .auth-meta-row {
@@ -849,7 +825,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.78rem;
-    color: #555;
+    color: var(--muted);
     margin: 2px 0;
   }
   .auth-checkbox-label {
@@ -861,8 +837,10 @@
   .auth-checkbox {
     width: 14px; height: 14px;
     border-radius: 4px;
-    border: 1px solid #c0c0c0;
+    border: 1px solid var(--border);
+    background: var(--card);
     cursor: pointer;
+    accent-color: var(--accent);
   }
   .auth-link {
     color: var(--accent);
@@ -901,13 +879,13 @@
     align-items: center;
     text-align: center;
     margin: 16px 0;
-    color: #888;
+    color: var(--muted);
     font-size: 0.75rem;
   }
   .auth-divider::before, .auth-divider::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border);
   }
   .auth-divider:not(:empty)::before { margin-right: .8em; }
   .auth-divider:not(:empty)::after { margin-left: .8em; }
@@ -922,9 +900,9 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    color: #333;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
     padding: 10px;
     border-radius: 12px;
     font-family: 'DM Sans', sans-serif;
@@ -934,8 +912,8 @@
     transition: background 0.2s, border-color 0.2s;
   }
   .auth-social-btn:hover {
-    background: #f8f9fa;
-    border-color: #c0c0c0;
+    background: var(--border);
+    border-color: var(--accent);
   }
   .auth-social-icon {
     width: 18px; height: 18px;
@@ -1061,9 +1039,13 @@
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-logo">ZEST</span>
   <span>© 2026 ZEST Delivery. All rights reserved.</span>
-  <span>🍕 Made with hunger.</span>
+  <span style="font-weight: 600; color: var(--text);">Made by Gous</span>
+  <span>
+    <a href="https://github.com/Khangulamgousamjat/Foodie" target="_blank" style="color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='var(--accent)';" onmouseout="this.style.color='var(--muted)';">
+      🐙 GitHub Repo
+    </a>
+  </span>
 </footer>
 
 <!-- MENU MODAL -->
@@ -1198,13 +1180,6 @@
       <!-- Error Box -->
       <div class="auth-error-box" id="auth-error-box"></div>
       
-      <!-- Pill Toggle Switch -->
-      <div class="auth-toggle-container" onclick="event.stopPropagation()">
-        <div class="auth-toggle-pill" id="auth-toggle-pill"></div>
-        <div class="auth-toggle-btn active" id="toggle-login-btn" onclick="setAuthTab('login')">Log In</div>
-        <div class="auth-toggle-btn" id="toggle-signup-btn" onclick="setAuthTab('signup')">Sign Up</div>
-      </div>
-      
       <!-- FORM STATED STATE 1: LOG IN -->
       <form class="auth-form-view active" id="auth-form-login" onsubmit="submitEmailLogin(event)">
         <div class="auth-input-group">
@@ -1233,6 +1208,27 @@
         </div>
         
         <button type="submit" class="auth-submit-btn">Log In</button>
+        
+        <div class="auth-divider">Or continue with</div>
+        
+        <div class="auth-social-row">
+          <button type="button" class="auth-social-btn" onclick="firebaseGoogleSignIn()">
+            <svg class="auth-social-icon" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.137 4.114-3.328 0-6.026-2.698-6.026-6.026 0-3.328 2.698-6.026 6.026-6.026 1.446 0 2.77.512 3.805 1.362l3.056-3.056C18.98 2.87 15.83 1.7 12.24 1.7 6.44 1.7 1.7 6.44 1.7 12.24s4.74 10.54 10.54 10.54c5.802 0 10.155-4.08 10.155-10.285 0-.698-.06-1.378-.174-2.21H12.24z"/>
+            </svg>
+            Google
+          </button>
+          <button type="button" class="auth-social-btn" onclick="firebaseAppleSignIn()">
+            <svg class="auth-social-icon" viewBox="0 0 24 24">
+              <path fill="#ffffff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-.96.04-2.13.64-2.82 1.45-.6.69-1.12 1.83-.98 2.94.1.08 2.15-.52 2.81-1.33z"/>
+            </svg>
+            Apple
+          </button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--muted);">
+          Don't have an account? <a href="#" class="auth-link" onclick="event.preventDefault(); setAuthTab('signup');">Sign Up</a>
+        </div>
       </form>
       
       <!-- FORM STATED STATE 2: SIGN UP -->
@@ -1270,30 +1266,33 @@
           </div>
         </div>
         
-        <div style="font-size: 0.72rem; color: #666; text-align: left; margin: 4px 0 2px; line-height: 1.4;">
+        <div style="font-size: 0.72rem; color: var(--muted); text-align: left; margin: 4px 0 2px; line-height: 1.4;">
           By creating an account, you agree to our <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>.
         </div>
         
         <button type="submit" class="auth-submit-btn">Create Account</button>
+        
+        <div class="auth-divider">Or continue with</div>
+        
+        <div class="auth-social-row">
+          <button type="button" class="auth-social-btn" onclick="firebaseGoogleSignIn()">
+            <svg class="auth-social-icon" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.137 4.114-3.328 0-6.026-2.698-6.026-6.026 0-3.328 2.698-6.026 6.026-6.026 1.446 0 2.77.512 3.805 1.362l3.056-3.056C18.98 2.87 15.83 1.7 12.24 1.7 6.44 1.7 1.7 6.44 1.7 12.24s4.74 10.54 10.54 10.54c5.802 0 10.155-4.08 10.155-10.285 0-.698-.06-1.378-.174-2.21H12.24z"/>
+            </svg>
+            Google
+          </button>
+          <button type="button" class="auth-social-btn" onclick="firebaseAppleSignIn()">
+            <svg class="auth-social-icon" viewBox="0 0 24 24">
+              <path fill="#ffffff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-.96.04-2.13.64-2.82 1.45-.6.69-1.12 1.83-.98 2.94.1.08 2.15-.52 2.81-1.33z"/>
+            </svg>
+            Apple
+          </button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--muted);">
+          Already have an account? <a href="#" class="auth-link" onclick="event.preventDefault(); setAuthTab('login');">Log In</a>
+        </div>
       </form>
-      
-      <!-- Social Logins Section -->
-      <div class="auth-divider">Or continue with</div>
-      
-      <div class="auth-social-row">
-        <button class="auth-social-btn" onclick="firebaseGoogleSignIn()">
-          <svg class="auth-social-icon" viewBox="0 0 24 24">
-            <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.137 4.114-3.328 0-6.026-2.698-6.026-6.026 0-3.328 2.698-6.026 6.026-6.026 1.446 0 2.77.512 3.805 1.362l3.056-3.056C18.98 2.87 15.83 1.7 12.24 1.7 6.44 1.7 1.7 6.44 1.7 12.24s4.74 10.54 10.54 10.54c5.802 0 10.155-4.08 10.155-10.285 0-.698-.06-1.378-.174-2.21H12.24z"/>
-          </svg>
-          Google
-        </button>
-        <button class="auth-social-btn" onclick="firebaseAppleSignIn()">
-          <svg class="auth-social-icon" viewBox="0 0 24 24">
-            <path fill="#000000" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-.96.04-2.13.64-2.82 1.45-.6.69-1.12 1.83-.98 2.94.1.08 2.15-.52 2.81-1.33z"/>
-          </svg>
-          Apple
-        </button>
-      </div>
       
     </div>
   </div>
@@ -1655,6 +1654,14 @@ const DB = {
       {id:3504,name:"Char Kway Teow",desc:"Flat rice noodles, wok-fried, dark soy, bean sprouts",price:309,emoji:"🥘"},
       {id:3505,name:"Teh Tarik",desc:"Malaysian pulled milk tea, frothy and sweet",price:89,emoji:"🍵"},
       {id:3506,name:"Ondeh Ondeh (x6)",desc:"Pandan rice balls with palm sugar filling",price:149,emoji:"🟢"},
+    ]},
+    { id:36, name:"The Mojito Club", emoji:"🥤", bg:"#0a1f25", rating:4.8, time:"10–20 min", fee:"Free", category:"🥤 Drinks", badge:"NEW", tags:["Mojitos","Mocktails","Refreshing","Drinks"], menu:[
+      {id:3601,name:"Classic Mint Mojito",desc:"Fresh mint leaves, lime juice, brown sugar, club soda",price:120,emoji:"🌿"},
+      {id:3602,name:"Virgin Strawberry Mojito",desc:"Muddled fresh strawberries, mint, lime, sparkling soda",price:140,emoji:"🍓"},
+      {id:3603,name:"Mango Mint Cooler",desc:"Sweet mango nectar, fresh mint, lime, chilled club soda",price:140,emoji:"🥭"},
+      {id:3604,name:"Blue Lagoon Mocktail",desc:"Blue curacao syrup, fresh lemonade, sprite, maraschino cherry",price:130,emoji:"🍹"},
+      {id:3605,name:"Peach Mint Iced Tea",desc:"Brewed black tea, sweet peach syrup, fresh mint, crushed ice",price:110,emoji:"🍑"},
+      {id:3606,name:"Watermelon Basil Slush",desc:"Fresh watermelon juice blended with sweet basil and ice",price:130,emoji:"🍉"}
     ]}
   ]
 
@@ -1672,7 +1679,9 @@ function renderHeroCards() {
   const el = document.getElementById('hero-visual');
   el.innerHTML = picks.map(r => `
     <div class="hero-card" onclick="openModal(${r.id})">
-      <div class="hero-emoji">${r.emoji}</div>
+      <div class="hero-img-container">
+        <img src="${getFoodImage(r.name)}" alt="${r.name}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80'">
+      </div>
       <h4>${r.name}</h4>
       <span>⭐ ${r.rating} · ${r.time}</span>
     </div>
@@ -1694,42 +1703,37 @@ function getFoodImage(name) {
   const n = (name || '').toLowerCase();
   const U = 'https://images.unsplash.com/photo-';
   
-  // Categorized pools of high-resolution Unsplash photos
+  // Categorized pools of high-resolution Unsplash photos (all verified 200 OK)
   const pools = {
     pizza: [
       U + '1513104890138-7c749659a591?w=500&h=350&fit=crop&q=80', // Margherita
       U + '1593560708920-61dd98c46a4e?w=500&h=350&fit=crop&q=80', // Pepperoni
       U + '1574071318508-1cdbab80d002?w=500&h=350&fit=crop&q=80', // Diavola
       U + '1604382355076-af4b0eb60143?w=500&h=350&fit=crop&q=80', // Veg Pizza
-      U + '1534308983496-4fabb1a015ee?w=500&h=350&fit=crop&q=80', // Cheese burst
-      U + '1585238342024-78d387f4a707?w=500&h=350&fit=crop&q=80'  // Stuffed crust
+      U + '1534308983496-4fabb1a015ee?w=500&h=350&fit=crop&q=80'  // Cheese burst
     ],
     burger: [
       U + '1568901346375-23c9450c58cd?w=500&h=350&fit=crop&q=80', // Smash
       U + '1586190848861-99aa4a171e90?w=500&h=350&fit=crop&q=80', // Double Cheeseburger
       U + '1571091718767-18b5b1457add?w=500&h=350&fit=crop&q=80', // BBQ Stack
       U + '1550547660-d9450f859349?w=500&h=350&fit=crop&q=80', // Wagyu Burger
-      U + '1625813506062-0aeb1d7a094b?w=500&h=350&fit=crop&q=80', // Chicken Burger
-      U + '1606755962773-d324e0a13086?w=500&h=350&fit=crop&q=80'  // Crispy stack
+      U + '1625813506062-0aeb1d7a094b?w=500&h=350&fit=crop&q=80'  // Chicken Burger
     ],
     fries: [
-      U + '1573080496219-bb964701c2d0?w=500&h=350&fit=crop&q=80', // French fries
-      U + '1576107232684-1279f390859f?w=500&h=350&fit=crop&q=80', // Loaded cheese fries
+      U + '1576107232684-1279f390859f?w=500&h=350&fit=crop&q=80', // French fries
       U + '1618040996337-56904b7850b9?w=500&h=350&fit=crop&q=80', // Curly fries
       U + '1585109649139-366815a0d713?w=500&h=350&fit=crop&q=80'  // Waffle fries
     ],
     sushi: [
-      U + '1553621042-f6e147245754?w=500&h=350&fit=crop&q=80', // Nigiri
       U + '1579871494447-9811cf80d66c?w=500&h=350&fit=crop&q=80', // Dragon roll
-      U + '1611143669185-af224c5e3252?w=500&h=350&fit=crop&q=80', // Spicy tuna roll
-      U + '1583623025817-d180a2221d0a?w=500&h=350&fit=crop&q=80', // Rainbow roll
-      U + '1563612116-610d7293e64f?w=500&h=350&fit=crop&q=80'  // Sushi platter
+      U + '1611143669185-af224c5e3252?w=500&h=350&fit=crop&q=80', // Sushi roll
+      U + '1583623025817-d180a2221d0a?w=500&h=350&fit=crop&q=80', // Sushi platter
+      U + '1553621042-f6e147245754?w=500&h=350&fit=crop&q=80'  // Nigiri
     ],
     ramen: [
       U + '1569050467447-ce54b3bbc37d?w=500&h=350&fit=crop&q=80', // Tonkotsu Ramen
-      U + '1557872945-1c944b77f98d?w=500&h=350&fit=crop&q=80', // Miso Ramen
-      U + '1591814468924-cafb06223450?w=500&h=350&fit=crop&q=80', // Spicy Ramen
-      U + '1547928500-4940d5c22a08?w=500&h=350&fit=crop&q=80'  // Noodle soup
+      U + '1552611052-33e04de081de?w=500&h=350&fit=crop&q=80', // Miso Ramen
+      U + '1541832676-9b763b0239ab?w=500&h=350&fit=crop&q=80'  // Noodle soup
     ],
     tacos: [
       U + '1565299585323-38d6b0865b47?w=500&h=350&fit=crop&q=80', // Al Pastor
@@ -1740,80 +1744,70 @@ function getFoodImage(name) {
     biryani: [
       U + '1633945274405-b6c8069047b0?w=500&h=350&fit=crop&q=80', // Chicken Biryani
       U + '1596797038530-2c107229654b?w=500&h=350&fit=crop&q=80', // Dum Biryani
-      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80', // Mutton Biryani
-      U + '1642821373181-696a54687e73?w=500&h=350&fit=crop&q=80', // Egg Biryani
-      U + '1633945274405-b6c8069047b0?w=500&h=350&fit=crop&q=80'  // Veg Biryani
+      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80'  // Mutton Biryani
     ],
     paneer: [
       U + '1601050690597-df0568f70950?w=500&h=350&fit=crop&q=80', // Paneer Tikka
       U + '1585937421612-70a008356fbe?w=500&h=350&fit=crop&q=80', // Palak Paneer
-      U + '1631452180519-7011ac94e177?w=500&h=350&fit=crop&q=80', // Kadai Paneer
       U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80'  // Shahi Paneer
     ],
     curry: [
-      U + '1565557623262-b51ff2ad5c0f?w=500&h=350&fit=crop&q=80', // Butter Chicken
-      U + '1546833999-b9f581a1996d?w=500&h=350&fit=crop&q=80', // Dal Makhani
-      U + '1606491956689-2ea866880c84?w=500&h=350&fit=crop&q=80', // Chole Bhature
-      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80', // Rogan Josh
-      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80'  // Kadhai Chicken
+      U + '1546833999-b9f581a1996d?w=500&h=350&fit=crop&q=80', // Indian Curry
+      U + '1606491956689-2ea866880c84?w=500&h=350&fit=crop&q=80', // Dal Makhani
+      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80', // Chana/Chole
+      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80'  // Chicken Curry
     ],
     dosa: [
-      U + '1630383249896-425f7b34b7b1?w=500&h=350&fit=crop&q=80', // Masala Dosa
-      U + '1668236543090-82eba5ee5976?w=500&h=350&fit=crop&q=80', // Idli Sambar
-      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80', // Medu Vada
-      U + '1630383249896-425f7b34b7b1?w=500&h=350&fit=crop&q=80'  // Uttapam
+      U + '1668236543090-82eba5ee5976?w=500&h=350&fit=crop&q=80', // Masala Dosa
+      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80'  // Idli Sambar
     ],
     chaat: [
-      U + '1601050690597-df0568f70950?w=500&h=350&fit=crop&q=80', // Pani Puri
-      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80', // Bhel Puri
-      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80', // Aloo Tikki
-      U + '1601050690597-df0568f70950?w=500&h=350&fit=crop&q=80'  // Papdi Chaat
+      U + '1601050690597-df0568f70950?w=500&h=350&fit=crop&q=80', // Samosa
+      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80'  // Pani Puri
     ],
     kebab: [
-      U + '1544025162-d76538b2a681?w=500&h=350&fit=crop&q=80', // Seekh Kebab
-      U + '1603360946311-316252d35f38?w=500&h=350&fit=crop&q=80', // Shawarma Wrap
-      U + '1529193591184-b1d58069ecdd?w=500&h=350&fit=crop&q=80', // Doner wrap
-      U + '1599487488170-d11ec9c081dc?w=500&h=350&fit=crop&q=80'  // Grilled Skewer
+      U + '1529193591184-b1d58069ecdd?w=500&h=350&fit=crop&q=80', // Seekh Kebab
+      U + '1555939594-58d7cb561ad1?w=500&h=350&fit=crop&q=80', // Shawarma Wrap
+      U + '1619535860434-ba1d8fa12536?w=500&h=350&fit=crop&q=80'  // Doner wrap
     ],
     dessert: [
-      U + '1578985545062-69928b1d9587?w=500&h=350&fit=crop&q=80', // Brownie
-      U + '1559181567-c3190ef39db1?w=500&h=350&fit=crop&q=80', // Cheesecake
-      U + '1563805042-7684c019e1cb?w=500&h=350&fit=crop&q=80', // Ice Cream Sundae
-      U + '1488900128323-21503983d706?w=500&h=350&fit=crop&q=80', // Donut
+      U + '1578985545062-69928b1d9587?w=500&h=350&fit=crop&q=80', // Cake
+      U + '1563805042-7684c019e1cb?w=500&h=350&fit=crop&q=80', // Ice Cream
       U + '1484723091739-30a097e8f929?w=500&h=350&fit=crop&q=80', // Waffles
-      U + '1519676867240-d03521be7513?w=500&h=350&fit=crop&q=80', // Crepes
-      U + '1598511453168-c00a2478b3f5?w=500&h=350&fit=crop&q=80', // Baklava
-      U + '1571877227200-a0d98ea607e9?w=500&h=350&fit=crop&q=80'  // Tiramisu / Custard
+      U + '1565958011703-44f9829ba187?w=500&h=350&fit=crop&q=80', // Cake Slice
+      U + '1567620905732-2d1ec7ab7445?w=500&h=350&fit=crop&q=80', // Pancakes
+      U + '1551024601-bec78aea704b?w=500&h=350&fit=crop&q=80', // Donut
+      U + '1587314168485-3236d6710814?w=500&h=350&fit=crop&q=80'  // Baklava
     ],
     drink: [
-      U + '1572490122747-3a5c9abdab62?w=500&h=350&fit=crop&q=80', // Milkshake
       U + '1558618666-fcd25c85cd64?w=500&h=350&fit=crop&q=80', // Bubble Tea
-      U + '1517723368363-cc7b36ab5c6b?w=500&h=350&fit=crop&q=80', // Coffee / Latte
-      U + '1534353436294-0dbd4bdac845?w=500&h=350&fit=crop&q=80', // Juice / Mojito
+      U + '1534353436294-0dbd4bdac845?w=500&h=350&fit=crop&q=80', // Juice
       U + '1544145945-f90425340c7e?w=500&h=350&fit=crop&q=80', // Smoothie
-      U + '1571091718767-18b5b1457add?w=500&h=350&fit=crop&q=80'  // Lassi
+      U + '1571091718767-18b5b1457add?w=500&h=350&fit=crop&q=80', // Mojito
+      U + '1513558161293-cdaf765ed2fd?w=500&h=350&fit=crop&q=80', // Soft drink
+      U + '1551024506-0bccd828d307?w=500&h=350&fit=crop&q=80'  // Milkshake
     ],
     salad: [
       U + '1512621776951-a57141f2eefd?w=500&h=350&fit=crop&q=80', // Power Bowl
       U + '1540420773420-3366772f4999?w=500&h=350&fit=crop&q=80', // Salad
-      U + '1546069901-ba9599a7e63c?w=500&h=350&fit=crop&q=80'  // Avocado Toast / Bowl
+      U + '1546069901-ba9599a7e63c?w=500&h=350&fit=crop&q=80'  // Healthy bowl
     ],
     meat: [
       U + '1546833999-b9f581a1996d?w=500&h=350&fit=crop&q=80', // Steak
-      U + '1529692236671-f1f6cf9683ba?w=500&h=350&fit=crop&q=80', // Ribs
-      U + '1599487488170-d11ec9c081dc?w=500&h=350&fit=crop&q=80', // Fried Chicken
-      U + '1544025162-d76538b2a681?w=500&h=350&fit=crop&q=80'  // Grilled Meat
+      U + '1529692236671-f1f6cf9683ba?w=500&h=350&fit=crop&q=80', // BBQ Ribs
+      U + '1560684352-8497838a2229?w=500&h=350&fit=crop&q=80', // Wings
+      U + '1524438418049-ab2acb7aa48f?w=500&h=350&fit=crop&q=80'  // Grilled Meat
     ],
     seafood: [
       U + '1565680018434-b513d5e5fd47?w=500&h=350&fit=crop&q=80', // Salmon
-      U + '1559737607-9878a634d41a?w=500&h=350&fit=crop&q=80', // Prawns
-      U + '1534080564595-5b8d262ab30a?w=500&h=350&fit=crop&q=80', // Lobster
-      U + '1599084993091-1cb5c0721cc6?w=500&h=350&fit=crop&q=80'  // Calamari
+      U + '1599084993091-1cb5c0721cc6?w=500&h=350&fit=crop&q=80', // Calamari
+      U + '1519708227418-c8fd9a32b7a2?w=500&h=350&fit=crop&q=80', // Salmon fillet
+      U + '1625938146369-adc83368bda7?w=500&h=350&fit=crop&q=80'  // Prawns
     ],
     asian: [
-      U + '1563245372-f21724e3856d?w=500&h=350&fit=crop&q=80', // Dumpling / Gyoza
-      U + '1562802378-063ec186a863?w=500&h=350&fit=crop&q=80', // Fried Rice
-      U + '1585032226651-759b368d7246?w=500&h=350&fit=crop&q=80', // Asian Noodles
+      U + '1563245372-f21724e3856d?w=500&h=350&fit=crop&q=80', // Dumplings
+      U + '1562802378-063ec186a863?w=500&h=350&fit=crop&q=80', // Wok Fried Rice
+      U + '1585032226651-759b368d7246?w=500&h=350&fit=crop&q=80', // Noodles
       U + '1603133872878-684f208fb84b?w=500&h=350&fit=crop&q=80'  // Bibimbap
     ],
     general: [
@@ -1839,11 +1833,11 @@ function getFoodImage(name) {
     pool = pools.ramen;
   } else if (n.includes('taco') || n.includes('nacho') || n.includes('quesadilla') || n.includes('loco')) {
     pool = pools.tacos;
-  } else if (n.includes('biryani') || n.includes('darbar')) {
+  } else if (n.includes('biryani') || n.includes('darbar') || n.includes('hyderabadi')) {
     pool = pools.biryani;
   } else if (n.includes('paneer') || n.includes('garden')) {
     pool = pools.paneer;
-  } else if (n.includes('dal') || n.includes('chole') || n.includes('curry') || n.includes('rogan josh') || n.includes('tikka') || n.includes('makhani')) {
+  } else if (n.includes('dal') || n.includes('chole') || n.includes('curry') || n.includes('rogan josh') || n.includes('tikka') || n.includes('makhani') || n.includes('punjabi') || n.includes('dhaba') || n.includes('indian')) {
     pool = pools.curry;
   } else if (n.includes('dosa') || n.includes('idli') || n.includes('vada') || n.includes('uttapam') || n.includes('south')) {
     pool = pools.dosa;
@@ -1853,7 +1847,7 @@ function getFoodImage(name) {
     pool = pools.kebab;
   } else if (n.includes('cake') || n.includes('waffle') || n.includes('crepe') || n.includes('sundae') || n.includes('ice cream') || n.includes('donut') || n.includes('macaron') || n.includes('baklava') || n.includes('brownie') || n.includes('tiramisu') || n.includes('panna cotta') || n.includes('dessert') || n.includes('funday') || n.includes('crumb') || n.includes('bistro')) {
     pool = pools.dessert;
-  } else if (n.includes('shake') || n.includes('lassi') || n.includes('coffee') || n.includes('tea') || n.includes('smoothie') || n.includes('juice') || n.includes('drink') || n.includes('yakult') || n.includes('sharbat') || n.includes('coco') || n.includes('bubble')) {
+  } else if (n.includes('shake') || n.includes('lassi') || n.includes('coffee') || n.includes('tea') || n.includes('smoothie') || n.includes('juice') || n.includes('drink') || n.includes('yakult') || n.includes('sharbat') || n.includes('coco') || n.includes('bubble') || n.includes('mojito') || n.includes('sip') || n.includes('cooler') || n.includes('mocktail')) {
     pool = pools.drink;
   } else if (n.includes('salad') || n.includes('bowl') || n.includes('healthy') || n.includes('green bowl')) {
     pool = pools.salad;
@@ -1872,9 +1866,7 @@ function getFoodImage(name) {
   }
   const index = Math.abs(hash) % pool.length;
   return pool[index];
-}
-
-function renderRestaurants() {
+}function renderRestaurants() {
   const query = document.getElementById('search-input').value.toLowerCase();
   let list = DB.restaurants;
   if (activeFilter !== "All") list = list.filter(r => r.category === activeFilter);
@@ -2498,24 +2490,15 @@ renderCart();
   };
 
   window.setAuthTab = function(mode) {
-    const pill = document.getElementById('auth-toggle-pill');
-    const loginBtn = document.getElementById('toggle-login-btn');
-    const signupBtn = document.getElementById('toggle-signup-btn');
     const loginForm = document.getElementById('auth-form-login');
     const signupForm = document.getElementById('auth-form-signup');
     const subtitle = document.getElementById('auth-modal-subtitle');
     
     if (mode === 'login') {
-      pill.style.transform = 'translateX(0)';
-      loginBtn.classList.add('active');
-      signupBtn.classList.remove('active');
       loginForm.classList.add('active');
       signupForm.classList.remove('active');
       subtitle.textContent = 'Welcome back! Log in to order delicious meals.';
     } else {
-      pill.style.transform = 'translateX(100%)';
-      loginBtn.classList.remove('active');
-      signupBtn.classList.add('active');
       loginForm.classList.remove('active');
       signupForm.classList.add('active');
       subtitle.textContent = 'Create an account to join ZEST & track your orders!';
