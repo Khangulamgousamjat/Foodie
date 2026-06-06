@@ -1134,7 +1134,7 @@
             <input type="radio" name="cust-size" value="Standard" checked onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
           </label>
           <label style="flex: 1; display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)';" onclick="this.querySelector('input').checked=true; updateCustomizerPrice();">
-            <span style="font-size: 0.85rem;">Large (+$2.50)</span>
+            <span style="font-size: 0.85rem;">Large (+₹238)</span>
             <input type="radio" name="cust-size" value="Large" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
           </label>
         </div>
@@ -1145,12 +1145,12 @@
         <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text); font-weight: 500;">Add Extras</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <label style="display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)';" onclick="const chk=this.querySelector('input'); chk.checked=!chk.checked; updateCustomizerPrice();">
-            <span style="font-size: 0.85rem;">🧀 Extra Cheese (+$1.50)</span>
-            <input type="checkbox" id="cust-extra-cheese" value="1.50" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
+            <span style="font-size: 0.85rem;">🧀 Extra Cheese (+₹143)</span>
+            <input type="checkbox" id="cust-extra-cheese" value="143" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
           </label>
           <label style="display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)';" onclick="const chk=this.querySelector('input'); chk.checked=!chk.checked; updateCustomizerPrice();">
-            <span style="font-size: 0.85rem;">🥓 Extra Bacon (+$2.00)</span>
-            <input type="checkbox" id="cust-extra-bacon" value="2.00" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
+            <span style="font-size: 0.85rem;">🥓 Extra Bacon (+₹190)</span>
+            <input type="checkbox" id="cust-extra-bacon" value="190" onchange="updateCustomizerPrice()" onclick="event.stopPropagation()">
           </label>
         </div>
       </div>
@@ -1358,6 +1358,11 @@
           <h4>Marcus T.</h4>
           <span>⭐ 4.92 · 1,240 deliveries · Honda PCX 150</span>
         </div>
+      </div>
+      <button class="track-close-btn" onclick="closeTracking()" style="margin-top: 20px;">Close & Go Back</button>
+    </div>
+  </div>
+</div>
 <script>
 /* ═══════════════════════════════════════
    MOCK BACKEND — all data & "API" logic
@@ -2103,10 +2108,10 @@ function updateCustomizerPrice() {
   let price = basePrice;
   
   const isLarge = document.querySelector('input[name="cust-size"]:checked').value === 'Large';
-  if (isLarge) price += 2.50;
+  if (isLarge) price += 238;
   
-  if (document.getElementById('cust-extra-cheese').checked) price += 1.50;
-  if (document.getElementById('cust-extra-bacon').checked) price += 2.00;
+  if (document.getElementById('cust-extra-cheese').checked) price += 143;
+  if (document.getElementById('cust-extra-bacon').checked) price += 190;
   
   document.getElementById('cust-total-price').textContent = '₹' + price.toLocaleString('en-IN');
 }
@@ -2131,14 +2136,14 @@ function confirmAddToCart() {
   
   let optionsText = `Size: ${size}`;
   let additionalPrice = 0;
-  if (size === 'Large') additionalPrice += 2.50;
+  if (size === 'Large') additionalPrice += 238;
   if (extraCheese) {
     optionsText += ', +Cheese';
-    additionalPrice += 1.50;
+    additionalPrice += 143;
   }
   if (extraBacon) {
     optionsText += ', +Bacon';
-    additionalPrice += 2.00;
+    additionalPrice += 190;
   }
   
   const finalPrice = item.price + additionalPrice;
