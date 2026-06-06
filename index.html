@@ -620,6 +620,374 @@
     .cart-sidebar { width: 100%; }
     .tracking-panel { border-radius: 20px; }
   }
+
+  /* ── AUTHENTICATION MODAL & PROFILE STYLES ── */
+  .auth-backdrop {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,.8); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .auth-backdrop.open { opacity: 1; pointer-events: all; }
+  .auth-modal-card {
+    background: #ffffff;
+    border-radius: 28px;
+    width: 90%; max-width: 900px;
+    height: 600px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,.6);
+    transform: scale(.95) translateY(20px);
+    transition: transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .auth-backdrop.open .auth-modal-card { transform: scale(1) translateY(0); }
+  
+  .auth-left {
+    width: 42%;
+    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&fit=crop&q=80');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .auth-left::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 100%);
+    z-index: 1;
+  }
+  .auth-left-content {
+    position: relative;
+    z-index: 2;
+    color: #ffffff;
+    text-align: left;
+  }
+  .auth-left-tag {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .auth-left h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    line-height: 1.1;
+    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+  }
+  .auth-left p {
+    font-size: 0.9rem;
+    color: #dddddd;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .auth-trust {
+    font-size: 0.82rem;
+    color: var(--accent2);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .auth-right {
+    width: 58%;
+    background: #fcfcfc;
+    color: #1a1714;
+    padding: 40px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+  }
+  .auth-close-btn {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: #f0f0f0; border: none;
+    color: #666; cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%;
+    font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .auth-close-btn:hover { background: #e0e0e0; color: #111; }
+  
+  .auth-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .auth-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .auth-brand span { color: var(--accent2); }
+  .auth-subtitle {
+    font-size: 0.85rem;
+    color: #666;
+  }
+  
+  .auth-toggle-container {
+    background: #eef0f2;
+    border-radius: 50px;
+    padding: 4px;
+    display: flex;
+    position: relative;
+    margin-bottom: 24px;
+    cursor: pointer;
+  }
+  .auth-toggle-pill {
+    position: absolute;
+    top: 4px; bottom: 4px; left: 4px;
+    width: calc(50% - 4px);
+    background: #ffffff;
+    border-radius: 50px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 1;
+  }
+  .auth-toggle-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s;
+    user-select: none;
+  }
+  .auth-toggle-btn.active {
+    color: #1a1714;
+  }
+  
+  .auth-form-view {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .auth-form-view.active {
+    display: flex;
+  }
+  
+  .auth-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+  }
+  .auth-input-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #444;
+    text-align: left;
+  }
+  .auth-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .auth-input-icon-left {
+    position: absolute;
+    left: 14px;
+    color: #888;
+    font-size: 0.95rem;
+    pointer-events: none;
+  }
+  .auth-input {
+    width: 100%;
+    background: #f5f7f8;
+    border: 1px solid #e0e0e0;
+    color: #111;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 12px 14px 12px 38px;
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .auth-input:focus {
+    border-color: var(--accent);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(244,124,43,0.1);
+  }
+  .auth-input-password-toggle {
+    position: absolute;
+    right: 14px;
+    color: #888;
+    font-size: 1rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  .auth-input-password-toggle:hover {
+    color: #444;
+  }
+  
+  .auth-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: #555;
+    margin: 2px 0;
+  }
+  .auth-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .auth-checkbox {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    border: 1px solid #c0c0c0;
+    cursor: pointer;
+  }
+  .auth-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .auth-link:hover {
+    text-decoration: underline;
+  }
+  
+  .auth-submit-btn {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(244,124,43,0.2);
+    margin-top: 6px;
+  }
+  .auth-submit-btn:hover {
+    background: #e06b1a;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(244,124,43,0.3);
+  }
+  .auth-submit-btn:active {
+    transform: translateY(1px);
+  }
+  
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 16px 0;
+    color: #888;
+    font-size: 0.75rem;
+  }
+  .auth-divider::before, .auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .auth-divider:not(:empty)::before { margin-right: .8em; }
+  .auth-divider:not(:empty)::after { margin-left: .8em; }
+  
+  .auth-social-row {
+    display: flex;
+    gap: 12px;
+  }
+  .auth-social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    color: #333;
+    padding: 10px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .auth-social-btn:hover {
+    background: #f8f9fa;
+    border-color: #c0c0c0;
+  }
+  .auth-social-icon {
+    width: 18px; height: 18px;
+  }
+  
+  .auth-error-box {
+    display: none;
+    background: rgba(224, 85, 85, 0.08);
+    border: 1px solid rgba(224, 85, 85, 0.3);
+    color: var(--danger);
+    font-size: 0.8rem;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  /* User details in Nav Bar */
+  .profile-dropdown {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 120%; right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    width: 240px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.6);
+    z-index: 1000;
+    box-sizing: border-box;
+    animation: dropIn 0.2s ease;
+  }
+  @keyframes dropIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 768px) {
+    .auth-modal-card {
+      flex-direction: column;
+      height: auto;
+      max-height: 90vh;
+      width: 95%;
+      overflow-y: auto;
+    }
+    .auth-left {
+      display: none;
+    }
+    .auth-right {
+      width: 100%;
+      padding: 30px 24px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -635,6 +1003,26 @@
       🛒 Cart
       <span class="cart-badge" id="cart-badge">0</span>
     </button>
+    
+    <!-- AUTHENTICATION STATE BUTTONS & USER PROFILE -->
+    <button class="btn-ghost" id="nav-login-btn" onclick="openAuthModal()" style="padding: 10px 22px; font-size: .9rem; border-radius: 50px; font-weight: 500; font-family: 'DM Sans', sans-serif;">Sign In</button>
+    
+    <div class="nav-profile" id="nav-profile" style="display: none; position: relative; align-items: center; z-index: 110;">
+      <div class="profile-chip" onclick="toggleProfileDropdown()" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 7px 16px; border-radius: 50px; cursor: pointer; transition: all 0.2s; height: 38px; box-sizing: border-box;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border)';">
+        <div class="profile-avatar" id="profile-avatar" style="width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">U</div>
+        <span class="profile-name" id="profile-name" style="font-size: 0.85rem; font-weight: 500; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text);">User</span>
+        <span style="font-size: 0.65rem; color: var(--muted); transform: scale(0.9);">▼</span>
+      </div>
+      
+      <div class="profile-dropdown" id="profile-dropdown">
+        <div style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 8px; text-align: left;">
+          <div style="font-size: 0.88rem; font-weight: 600; color: var(--text); line-height: 1.3;" id="dropdown-full-name">User Name</div>
+          <div style="font-size: 0.75rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; margin-top: 2px;" id="dropdown-email">user@example.com</div>
+          <div style="font-size: 0.75rem; color: var(--muted); margin-top: 2px;" id="dropdown-phone"></div>
+        </div>
+        <button class="checkout-btn" onclick="firebaseSignOut()" style="margin-top: 4px; padding: 10px 14px; font-size: 0.82rem; background: var(--danger); font-weight: 600; height: auto;">Sign Out</button>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -775,6 +1163,138 @@
         </div>
         <button class="checkout-btn" id="cust-add-btn" style="margin-top: 0; width: auto; padding: 12px 32px; font-weight: 600;">Add to Cart</button>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- AUTHENTICATION MODAL (LOGIN & REGISTRATION) -->
+<div class="auth-backdrop" id="auth-modal">
+  <div class="auth-modal-card">
+    
+    <!-- LEFT PANEL: MARKETING & IMAGE (Hidden on mobile) -->
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <span class="auth-left-tag">🔥 Trending No. 1</span>
+        <h2>Discover the best food in your city</h2>
+        <p>Join over 10,000+ local foodies ordering fresh, hot meals daily from premium selected restaurants.</p>
+        <div class="auth-trust">
+          <span>⭐️ 4.9/5 Trust Rating</span>
+          <span>·</span>
+          <span>10k+ Reviews</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- RIGHT PANEL: FUNCTIONAL FORM -->
+    <div class="auth-right">
+      <button class="auth-close-btn" onclick="closeAuthModal()">✕</button>
+      
+      <div class="auth-header">
+        <div class="auth-brand">ZE<span>ST</span></div>
+        <div class="auth-subtitle" id="auth-modal-subtitle">Welcome back! Log in to order delicious meals.</div>
+      </div>
+      
+      <!-- Error Box -->
+      <div class="auth-error-box" id="auth-error-box"></div>
+      
+      <!-- Pill Toggle Switch -->
+      <div class="auth-toggle-container" onclick="event.stopPropagation()">
+        <div class="auth-toggle-pill" id="auth-toggle-pill"></div>
+        <div class="auth-toggle-btn active" id="toggle-login-btn" onclick="setAuthTab('login')">Log In</div>
+        <div class="auth-toggle-btn" id="toggle-signup-btn" onclick="setAuthTab('signup')">Sign Up</div>
+      </div>
+      
+      <!-- FORM STATED STATE 1: LOG IN -->
+      <form class="auth-form-view active" id="auth-form-login" onsubmit="submitEmailLogin(event)">
+        <div class="auth-input-group">
+          <label for="login-email">Email Address</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon-left">✉️</span>
+            <input class="auth-input" type="email" id="login-email" placeholder="name@example.com" required autocomplete="username">
+          </div>
+        </div>
+        
+        <div class="auth-input-group" style="margin-top: 4px;">
+          <label for="login-password">Password</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon-left">🔒</span>
+            <input class="auth-input" type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+            <button type="button" class="auth-input-password-toggle" onclick="togglePasswordVisibility('login-password', 'login-pwd-eye')" id="login-pwd-eye">👁️‍🗨️</button>
+          </div>
+        </div>
+        
+        <div class="auth-meta-row">
+          <label class="auth-checkbox-label">
+            <input type="checkbox" class="auth-checkbox" id="login-remember" checked>
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="auth-link" onclick="event.preventDefault(); alert('Password reset link sent (Mocked).')">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="auth-submit-btn">Log In</button>
+      </form>
+      
+      <!-- FORM STATED STATE 2: SIGN UP -->
+      <form class="auth-form-view" id="auth-form-signup" onsubmit="submitEmailSignup(event)">
+        <div class="auth-input-group">
+          <label for="signup-name">Full Name</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon-left">👤</span>
+            <input class="auth-input" type="text" id="signup-name" placeholder="John Doe" autocomplete="name">
+          </div>
+        </div>
+        
+        <div class="auth-input-group" style="margin-top: 2px;">
+          <label for="signup-phone">Phone Number</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon-left">📞</span>
+            <input class="auth-input" type="tel" id="signup-phone" placeholder="9876543210" autocomplete="tel">
+          </div>
+        </div>
+        
+        <div class="auth-input-group" style="margin-top: 2px;">
+          <label for="signup-email">Email Address</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon-left">✉️</span>
+            <input class="auth-input" type="email" id="signup-email" placeholder="name@example.com" autocomplete="email">
+          </div>
+        </div>
+        
+        <div class="auth-input-group" style="margin-top: 2px;">
+          <label for="signup-password">Password</label>
+          <div class="auth-input-wrapper">
+            <span class="auth-input-icon-left">🔒</span>
+            <input class="auth-input" type="password" id="signup-password" placeholder="Min. 6 characters" autocomplete="new-password">
+            <button type="button" class="auth-input-password-toggle" onclick="togglePasswordVisibility('signup-password', 'signup-pwd-eye')" id="signup-pwd-eye">👁️‍🗨️</button>
+          </div>
+        </div>
+        
+        <div style="font-size: 0.72rem; color: #666; text-align: left; margin: 4px 0 2px; line-height: 1.4;">
+          By creating an account, you agree to our <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>.
+        </div>
+        
+        <button type="submit" class="auth-submit-btn">Create Account</button>
+      </form>
+      
+      <!-- Social Logins Section -->
+      <div class="auth-divider">Or continue with</div>
+      
+      <div class="auth-social-row">
+        <button class="auth-social-btn" onclick="firebaseGoogleSignIn()">
+          <svg class="auth-social-icon" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.137 4.114-3.328 0-6.026-2.698-6.026-6.026 0-3.328 2.698-6.026 6.026-6.026 1.446 0 2.77.512 3.805 1.362l3.056-3.056C18.98 2.87 15.83 1.7 12.24 1.7 6.44 1.7 1.7 6.44 1.7 12.24s4.74 10.54 10.54 10.54c5.802 0 10.155-4.08 10.155-10.285 0-.698-.06-1.378-.174-2.21H12.24z"/>
+          </svg>
+          Google
+        </button>
+        <button class="auth-social-btn" onclick="firebaseAppleSignIn()">
+          <svg class="auth-social-icon" viewBox="0 0 24 24">
+            <path fill="#000000" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-.96.04-2.13.64-2.82 1.45-.6.69-1.12 1.83-.98 2.94.1.08 2.15-.52 2.81-1.33z"/>
+          </svg>
+          Apple
+        </button>
+      </div>
+      
     </div>
   </div>
 </div>
@@ -1633,6 +2153,16 @@ let isCheckoutConfirm = false;
 
 function placeOrder() {
   if (cart.length === 0) return;
+  
+  // CHECKOUT INTERCEPTION: Check if user is authenticated with Firebase Auth
+  if (typeof window.isFirebaseUserLoggedIn === 'function' && !window.isFirebaseUserLoggedIn()) {
+    // Show auth modal, and pass callback to resume placing order upon success
+    window.openAuthModal(function() {
+      placeOrder();
+    });
+    return;
+  }
+  
   isCheckoutConfirm = true;
   
   // Show confirmation container inside the Location Modal
@@ -1801,6 +2331,285 @@ renderHeroCards();
 renderFilters();
 renderRestaurants();
 renderCart();
+</script>
+
+<!-- FIREBASE CLIENT-SIDE INTEGRATION ENGINE -->
+<script type="module">
+  // Load Firebase SDKs as modules from provided version CDN
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+  import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged, 
+    updateProfile, 
+    GoogleAuthProvider, 
+    signInWithPopup 
+  } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+  // Web App configuration keys provided by USER
+  const firebaseConfig = {
+    apiKey: "AIzaSyDPpkVnDZXZ4geILHim82FgGaSzAjNBV2c",
+    authDomain: "foodie-34d74.firebaseapp.com",
+    projectId: "foodie-34d74",
+    storageBucket: "foodie-34d74.firebasestorage.app",
+    messagingSenderId: "328826468155",
+    appId: "1:328826468155:web:7859fd318d3049e6a9291e",
+    measurementId: "G-E8CFQQGY00"
+  };
+
+  // Initialize Firebase & Analytics
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+
+  let currentUser = null;
+  let pendingOrderCallback = null;
+
+  // EXPOSE GLOBAL AUTH METHODS
+  window.openAuthModal = function(onSuccessCallback = null) {
+    if (onSuccessCallback && typeof onSuccessCallback === 'function') {
+      pendingOrderCallback = onSuccessCallback;
+    }
+    
+    // Clear forms and error box
+    document.getElementById('auth-error-box').style.display = 'none';
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('signup-name').value = '';
+    document.getElementById('signup-phone').value = '';
+    document.getElementById('signup-email').value = '';
+    document.getElementById('signup-password').value = '';
+    
+    document.getElementById('auth-modal').classList.add('open');
+  };
+
+  window.closeAuthModal = function() {
+    document.getElementById('auth-modal').classList.remove('open');
+    pendingOrderCallback = null;
+  };
+
+  window.setAuthTab = function(mode) {
+    const pill = document.getElementById('auth-toggle-pill');
+    const loginBtn = document.getElementById('toggle-login-btn');
+    const signupBtn = document.getElementById('toggle-signup-btn');
+    const loginForm = document.getElementById('auth-form-login');
+    const signupForm = document.getElementById('auth-form-signup');
+    const subtitle = document.getElementById('auth-modal-subtitle');
+    
+    if (mode === 'login') {
+      pill.style.transform = 'translateX(0)';
+      loginBtn.classList.add('active');
+      signupBtn.classList.remove('active');
+      loginForm.classList.add('active');
+      signupForm.classList.remove('active');
+      subtitle.textContent = 'Welcome back! Log in to order delicious meals.';
+    } else {
+      pill.style.transform = 'translateX(100%)';
+      loginBtn.classList.remove('active');
+      signupBtn.classList.add('active');
+      loginForm.classList.remove('active');
+      signupForm.classList.add('active');
+      subtitle.textContent = 'Create an account to join ZEST & track your orders!';
+    }
+    document.getElementById('auth-error-box').style.display = 'none';
+  };
+
+  window.togglePasswordVisibility = function(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.textContent = '👁️';
+    } else {
+      input.type = 'password';
+      icon.textContent = '👁️‍🗨️';
+    }
+  };
+
+  window.toggleProfileDropdown = function() {
+    const dropdown = document.getElementById('profile-dropdown');
+    const display = window.getComputedStyle(dropdown).display;
+    dropdown.style.display = display === 'none' ? 'flex' : 'none';
+  };
+
+  window.submitEmailLogin = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const submitBtn = document.querySelector('#auth-form-login .auth-submit-btn');
+    
+    try {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in...';
+      document.getElementById('auth-error-box').style.display = 'none';
+      
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.error(error);
+      showError(getFriendlyErrorMessage(error.code));
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Log In';
+    }
+  };
+
+  window.submitEmailSignup = async function(e) {
+    e.preventDefault();
+    const name = document.getElementById('signup-name').value.trim();
+    const phone = document.getElementById('signup-phone').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const submitBtn = document.querySelector('#auth-form-signup .auth-submit-btn');
+    
+    if (password.length < 6) {
+      showError('Password must be at least 6 characters long.');
+      return;
+    }
+    
+    try {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account...';
+      document.getElementById('auth-error-box').style.display = 'none';
+      
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      await updateProfile(user, { displayName: name });
+      
+      localStorage.setItem('zest-user-phone', phone);
+      localStorage.setItem('zest-user-name', name);
+      
+      // Manually trigger reload updates
+      auth.currentUser.displayName = name;
+      updateUIForUser(auth.currentUser);
+    } catch (error) {
+      console.error(error);
+      showError(getFriendlyErrorMessage(error.code));
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Account';
+    }
+  };
+
+  window.firebaseGoogleSignIn = async function() {
+    const provider = new GoogleAuthProvider();
+    try {
+      document.getElementById('auth-error-box').style.display = 'none';
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error(error);
+      showError(getFriendlyErrorMessage(error.code));
+    }
+  };
+
+  window.firebaseAppleSignIn = function() {
+    const toast = document.getElementById('toast');
+    toast.textContent = 'ℹ️ Apple Sign-In is mocked. Please continue with Google or Email.';
+    toast.style.background = 'var(--accent)';
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 4000);
+  };
+
+  window.firebaseSignOut = async function() {
+    try {
+      await signOut(auth);
+      localStorage.removeItem('zest-user-phone');
+      localStorage.removeItem('zest-user-name');
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
+
+  window.isFirebaseUserLoggedIn = function() {
+    return !!currentUser;
+  };
+
+  function showError(msg) {
+    const errorBox = document.getElementById('auth-error-box');
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+  }
+
+  function getFriendlyErrorMessage(code) {
+    switch (code) {
+      case 'auth/invalid-email':
+        return 'The email address is invalid.';
+      case 'auth/user-disabled':
+        return 'This account has been disabled.';
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        return 'Incorrect email or password.';
+      case 'auth/email-already-in-use':
+        return 'This email is already registered.';
+      case 'auth/weak-password':
+        return 'The password is too weak. Choose at least 6 characters.';
+      case 'auth/popup-closed-by-user':
+        return 'Sign-in popup was closed by the user.';
+      default:
+        return 'Authentication failed. Please try again.';
+    }
+  }
+
+  function updateUIForUser(user) {
+    const loginBtn = document.getElementById('nav-login-btn');
+    const profileDiv = document.getElementById('nav-profile');
+    
+    if (user) {
+      currentUser = user;
+      loginBtn.style.display = 'none';
+      profileDiv.style.display = 'flex';
+      
+      const name = user.displayName || localStorage.getItem('zest-user-name') || 'Foodie';
+      const email = user.email || '';
+      const phone = localStorage.getItem('zest-user-phone') || '';
+      
+      document.getElementById('profile-name').textContent = name;
+      document.getElementById('profile-avatar').textContent = name.charAt(0).toUpperCase();
+      document.getElementById('dropdown-full-name').textContent = name;
+      document.getElementById('dropdown-email').textContent = email;
+      document.getElementById('dropdown-phone').textContent = phone ? '📞 ' + phone : '';
+      
+      renderCart();
+      
+      if (pendingOrderCallback) {
+        const callback = pendingOrderCallback;
+        pendingOrderCallback = null;
+        window.closeAuthModal();
+        callback();
+      } else {
+        window.closeAuthModal();
+      }
+    } else {
+      currentUser = null;
+      loginBtn.style.display = 'block';
+      profileDiv.style.display = 'none';
+      document.getElementById('profile-dropdown').style.display = 'none';
+      renderCart();
+    }
+  }
+
+  // Set up Firebase Auth State observer
+  onAuthStateChanged(auth, (user) => {
+    updateUIForUser(user);
+  });
+
+  // Global click listener for closing auth modal and profile dropdown
+  window.addEventListener('click', (e) => {
+    const profile = document.getElementById('nav-profile');
+    if (profile && !profile.contains(e.target)) {
+      document.getElementById('profile-dropdown').style.display = 'none';
+    }
+    const authBackdrop = document.getElementById('auth-modal');
+    if (e.target === authBackdrop) {
+      window.closeAuthModal();
+    }
+  });
 </script>
 </body>
 </html>
