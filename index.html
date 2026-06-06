@@ -1684,91 +1684,189 @@ function renderFilters() {
 
 
 // ── FOOD IMAGE MAP (120+ keywords -> real Unsplash 4K photos) ──
+// ── FOOD IMAGE MAP (Deterministic hash-based unique Unsplash 4K photos) ──
 function getFoodImage(name) {
   const n = (name || '').toLowerCase();
   const U = 'https://images.unsplash.com/photo-';
-  const pics = [
-    [['pizza','margherita','diavola','pepperoni','quattro','cheese burst','stuffed crust'], U+'1513104890138-7c749659a591?w=600&h=400&fit=crop&q=85'],
-    [['burger','smash','cheeseburger','wagyu burger','double patty'], U+'1568901346375-23c9450c58cd?w=600&h=400&fit=crop&q=85'],
-    [['chicken burger','crispy chicken sandwich'], U+'1606755962773-d324e0a13086?w=600&h=400&fit=crop&q=85'],
-    [['fries','chips','poutine','loaded fries','curly','waffle fries','masala fries','dirty fries'], U+'1573080496219-bb964701c2d0?w=600&h=400&fit=crop&q=85'],
-    [['nachos','cheese fries','potato skin'], U+'1573080496219-bb964701c2d0?w=600&h=400&fit=crop&q=85'],
-    [['hot dog','corn dog'], U+'1568901346375-23c9450c58cd?w=600&h=400&fit=crop&q=85'],
-    [['onion ring'], U+'1568901346375-23c9450c58cd?w=600&h=400&fit=crop&q=85'],
-    [['milkshake','shake','cold brew float'], U+'1572490122747-3a5c9abdab62?w=600&h=400&fit=crop&q=85'],
-    [['wings','buffalo wing','honey garlic','ghost pepper wing'], U+'1527477396000-e27163b481c2?w=600&h=400&fit=crop&q=85'],
-    [['butter chicken','murgh makhani'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
-    [['biryani','dum biryani','gosht biryani'], U+'1596797038530-2c107229654b?w=600&h=400&fit=crop&q=85'],
-    [['paneer tikka','shahi paneer','palak paneer','paneer'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
-    [['dal makhani','dal','lentil','rajma'], U+'1547592166-23ac45744acd?w=600&h=400&fit=crop&q=85'],
-    [['naan','roti','paratha','kulcha','bhature','bread'], U+'1565557623262-b51ff2ad5c0f?w=600&h=400&fit=crop&q=85'],
-    [['samosa'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
-    [['dosa','masala dosa','uttapam'], U+'1630383249896-425f7b34b7b1?w=600&h=400&fit=crop&q=85'],
-    [['idli','medu vada','vada'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
-    [['pani puri','gol gappa','bhel puri','chaat','aloo tikki','dahi papdi','raj kachori','samosa chaat'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
-    [['chole','pindi chole'], U+'1567188040759-fb8a883dc6d6?w=600&h=400&fit=crop&q=85'],
-    [['vada pav','pav bhaji','misal pav','keema pav'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
-    [['lassi','mango lassi','chaas','buttermilk'], U+'1571091718767-18b5b1457add?w=600&h=400&fit=crop&q=85'],
-    [['gulab jamun','rasgulla','jalebi','halwa','barfi','ladoo','firni','payasam','shrikhand','mishti doi'], U+'1562077772-3bdade8d4b18?w=600&h=400&fit=crop&q=85'],
-    [['kulfi','malai kulfi'], U+'1488900128323-21503983d706?w=600&h=400&fit=crop&q=85'],
-    [['haleem'], U+'1585937421612-70a008356fbe?w=600&h=400&fit=crop&q=85'],
-    [['tandoori chicken','tandoor'], U+'1599487488170-d11ec9c081dc?w=600&h=400&fit=crop&q=85'],
-    [['kebab','seekh kebab','kofta','adana','iskender','galouti'], U+'1544025162-d76538b2a681?w=600&h=400&fit=crop&q=85'],
-    [['chai','masala chai','cutting chai','filter coffee','irani chai','teh tarik'], U+'1556742049-0cfed4f6a45d?w=600&h=400&fit=crop&q=85'],
-    [['sushi','nigiri','sashimi','maki','rainbow roll','dragon roll','spicy tuna'], U+'1553621042-f6e147245754?w=600&h=400&fit=crop&q=85'],
-    [['ramen','tonkotsu','miso ramen','tantanmen'], U+'1569050467447-ce54b3bbc37d?w=600&h=400&fit=crop&q=85'],
-    [['gyoza','dumpling','dim sum','har gow','wonton','spring roll','char siu'], U+'1563245372-f21724e3856d?w=600&h=400&fit=crop&q=85'],
-    [['edamame','miso soup'], U+'1553621042-f6e147245754?w=600&h=400&fit=crop&q=85'],
-    [['matcha','green tea latte'], U+'1517723368363-cc7b36ab5c6b?w=600&h=400&fit=crop&q=85'],
-    [['pad thai','thai noodle','singapore noodle','char kway teow','laksa','japchae','glass noodle'], U+'1562802378-063ec186a863?w=600&h=400&fit=crop&q=85'],
-    [['thai curry','green curry','massaman','red curry'], U+'1569596082827-c0ce8923c0e8?w=600&h=400&fit=crop&q=85'],
-    [['mango sticky rice'], U+'1546039907-7fa05f864c02?w=600&h=400&fit=crop&q=85'],
-    [['tom yum'], U+'1569596082827-c0ce8923c0e8?w=600&h=400&fit=crop&q=85'],
-    [['bibimbap','korean rice','tteokbokki','japchae'], U+'1590301157890-4810ed352733?w=600&h=400&fit=crop&q=85'],
-    [['korean fried chicken'], U+'1527477396000-e27163b481c2?w=600&h=400&fit=crop&q=85'],
-    [['fried rice','egg fried rice','hainanese chicken rice'], U+'1603133872878-684f208fb84b?w=600&h=400&fit=crop&q=85'],
-    [['kung pao','sweet sour','mapo tofu'], U+'1563245372-f21724e3856d?w=600&h=400&fit=crop&q=85'],
-    [['peking duck'], U+'1544025162-d76538b2a681?w=600&h=400&fit=crop&q=85'],
-    [['shawarma','doner','chicken doner','beef shawarma','kathi roll','wrap'], U+'1529193591184-b1d58069ecdd?w=600&h=400&fit=crop&q=85'],
-    [['falafel'], U+'1541014283-3b5a1e8a065a?w=600&h=400&fit=crop&q=85'],
-    [['hummus','pita'], U+'1541014283-3b5a1e8a065a?w=600&h=400&fit=crop&q=85'],
-    [['baklava'], U+'1598511453168-c00a2478b3f5?w=600&h=400&fit=crop&q=85'],
-    [['knafeh','kunafa'], U+'1562077772-3bdade8d4b18?w=600&h=400&fit=crop&q=85'],
-    [['taco','al pastor','birria'], U+'1565299585323-38d6b0865b47?w=600&h=400&fit=crop&q=85'],
-    [['churro'], U+'1488900128323-21503983d706?w=600&h=400&fit=crop&q=85'],
-    [['guacamole','avocado'], U+'1523049673857-eb18f1d7b578?w=600&h=400&fit=crop&q=85'],
-    [['pasta','fettuccine','spaghetti','penne','carbonara','arrabbiata','cacio e pepe'], U+'1563379926898-05f4575a45d8?w=600&h=400&fit=crop&q=85'],
-    [['lasagna','lasagne'], U+'1481931098730-318b6f776db0?w=600&h=400&fit=crop&q=85'],
-    [['gnocchi'], U+'1476124369491-e7adaf787f64?w=600&h=400&fit=crop&q=85'],
-    [['tiramisu'], U+'1571877227200-a0d98ea607e9?w=600&h=400&fit=crop&q=85'],
-    [['panna cotta','creme brulee','custard'], U+'1571877227200-a0d98ea607e9?w=600&h=400&fit=crop&q=85'],
-    [['croissant','macaron'], U+'1568702846914-96b305d2aaeb?w=600&h=400&fit=crop&q=85'],
-    [['garlic bread','focaccia'], U+'1565557623262-b51ff2ad5c0f?w=600&h=400&fit=crop&q=85'],
-    [['chocolate lava','brownie','fudge','lava cake'], U+'1470124182917-cc6e71b22ecc?w=600&h=400&fit=crop&q=85'],
-    [['cheesecake','ny cheesecake'], U+'1559181567-c3190ef39db1?w=600&h=400&fit=crop&q=85'],
-    [['ice cream','sundae','gelato','banana split','scoop'], U+'1563805042-7684c019e1cb?w=600&h=400&fit=crop&q=85'],
-    [['waffle','belgian waffle'], U+'1484723091739-30a097e8f929?w=600&h=400&fit=crop&q=85'],
-    [['crepe','nutella crepe'], U+'1519676867240-d03521be7513?w=600&h=400&fit=crop&q=85'],
-    [['cookie','cookie dough'], U+'1499636757-a2d5088faa1e?w=600&h=400&fit=crop&q=85'],
-    [['donut','doughnut'], U+'1488900128323-21503983d706?w=600&h=400&fit=crop&q=85'],
-    [['bubble tea','boba','taro','milk tea'], U+'1558618666-fcd25c85cd64?w=600&h=400&fit=crop&q=85'],
-    [['coconut water','coconut'], U+'1546039907-7fa05f864c02?w=600&h=400&fit=crop&q=85'],
-    [['smoothie','acai','juice','lemonade','punch'], U+'1544145945-f90425340c7e?w=600&h=400&fit=crop&q=85'],
-    [['coffee','espresso','cappuccino','latte'], U+'1517723368363-cc7b36ab5c6b?w=600&h=400&fit=crop&q=85'],
-    [['steak','ribeye','brisket'], U+'1546833999-b9f581a1996d?w=600&h=400&fit=crop&q=85'],
-    [['ribs','pulled pork','bbq'], U+'1529692236671-f1f6cf9683ba?w=600&h=400&fit=crop&q=85'],
-    [['salmon','fish','seafood','lobster','prawn','shrimp','calamari','clam','crab'], U+'1565680018434-b513d5e5fd47?w=600&h=400&fit=crop&q=85'],
-    [['power bowl','quinoa bowl','acai bowl','rice bowl','salad'], U+'1512621776951-a57141f2eefd?w=600&h=400&fit=crop&q=85'],
-    [['avocado toast','toast'], U+'1541014283-3b5a1e8a065a?w=600&h=400&fit=crop&q=85'],
-    [['soup','chowder','broth'], U+'1569596082827-c0ce8923c0e8?w=600&h=400&fit=crop&q=85'],
-    [['sandwich','sub','club'], U+'1529193591184-b1d58069ecdd?w=600&h=400&fit=crop&q=85'],
-    [['bhajiya','fritter','pakoda'], U+'1601050690597-df0568f70950?w=600&h=400&fit=crop&q=85'],
-    [['mozzarella stick','popcorn chicken','fried chicken'], U+'1527477396000-e27163b481c2?w=600&h=400&fit=crop&q=85'],
-  ];
-  for (const [keys, url] of pics) {
-    if (keys.some(k => n.includes(k))) return url;
+  
+  // Categorized pools of high-resolution Unsplash photos
+  const pools = {
+    pizza: [
+      U + '1513104890138-7c749659a591?w=500&h=350&fit=crop&q=80', // Margherita
+      U + '1593560708920-61dd98c46a4e?w=500&h=350&fit=crop&q=80', // Pepperoni
+      U + '1574071318508-1cdbab80d002?w=500&h=350&fit=crop&q=80', // Diavola
+      U + '1604382355076-af4b0eb60143?w=500&h=350&fit=crop&q=80', // Veg Pizza
+      U + '1534308983496-4fabb1a015ee?w=500&h=350&fit=crop&q=80', // Cheese burst
+      U + '1585238342024-78d387f4a707?w=500&h=350&fit=crop&q=80'  // Stuffed crust
+    ],
+    burger: [
+      U + '1568901346375-23c9450c58cd?w=500&h=350&fit=crop&q=80', // Smash
+      U + '1586190848861-99aa4a171e90?w=500&h=350&fit=crop&q=80', // Double Cheeseburger
+      U + '1571091718767-18b5b1457add?w=500&h=350&fit=crop&q=80', // BBQ Stack
+      U + '1550547660-d9450f859349?w=500&h=350&fit=crop&q=80', // Wagyu Burger
+      U + '1625813506062-0aeb1d7a094b?w=500&h=350&fit=crop&q=80', // Chicken Burger
+      U + '1606755962773-d324e0a13086?w=500&h=350&fit=crop&q=80'  // Crispy stack
+    ],
+    fries: [
+      U + '1573080496219-bb964701c2d0?w=500&h=350&fit=crop&q=80', // French fries
+      U + '1576107232684-1279f390859f?w=500&h=350&fit=crop&q=80', // Loaded cheese fries
+      U + '1618040996337-56904b7850b9?w=500&h=350&fit=crop&q=80', // Curly fries
+      U + '1585109649139-366815a0d713?w=500&h=350&fit=crop&q=80'  // Waffle fries
+    ],
+    sushi: [
+      U + '1553621042-f6e147245754?w=500&h=350&fit=crop&q=80', // Nigiri
+      U + '1579871494447-9811cf80d66c?w=500&h=350&fit=crop&q=80', // Dragon roll
+      U + '1611143669185-af224c5e3252?w=500&h=350&fit=crop&q=80', // Spicy tuna roll
+      U + '1583623025817-d180a2221d0a?w=500&h=350&fit=crop&q=80', // Rainbow roll
+      U + '1563612116-610d7293e64f?w=500&h=350&fit=crop&q=80'  // Sushi platter
+    ],
+    ramen: [
+      U + '1569050467447-ce54b3bbc37d?w=500&h=350&fit=crop&q=80', // Tonkotsu Ramen
+      U + '1557872945-1c944b77f98d?w=500&h=350&fit=crop&q=80', // Miso Ramen
+      U + '1591814468924-cafb06223450?w=500&h=350&fit=crop&q=80', // Spicy Ramen
+      U + '1547928500-4940d5c22a08?w=500&h=350&fit=crop&q=80'  // Noodle soup
+    ],
+    tacos: [
+      U + '1565299585323-38d6b0865b47?w=500&h=350&fit=crop&q=80', // Al Pastor
+      U + '1615870216519-2f9fa575fa5c?w=500&h=350&fit=crop&q=80', // Birria
+      U + '1551504734-5ee1c4a1479b?w=500&h=350&fit=crop&q=80', // Soft taco
+      U + '1513456852971-30c0b8199d4d?w=500&h=350&fit=crop&q=80'  // Nachos Supreme
+    ],
+    biryani: [
+      U + '1633945274405-b6c8069047b0?w=500&h=350&fit=crop&q=80', // Chicken Biryani
+      U + '1596797038530-2c107229654b?w=500&h=350&fit=crop&q=80', // Dum Biryani
+      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80', // Mutton Biryani
+      U + '1642821373181-696a54687e73?w=500&h=350&fit=crop&q=80', // Egg Biryani
+      U + '1633945274405-b6c8069047b0?w=500&h=350&fit=crop&q=80'  // Veg Biryani
+    ],
+    paneer: [
+      U + '1601050690597-df0568f70950?w=500&h=350&fit=crop&q=80', // Paneer Tikka
+      U + '1585937421612-70a008356fbe?w=500&h=350&fit=crop&q=80', // Palak Paneer
+      U + '1631452180519-7011ac94e177?w=500&h=350&fit=crop&q=80', // Kadai Paneer
+      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80'  // Shahi Paneer
+    ],
+    curry: [
+      U + '1565557623262-b51ff2ad5c0f?w=500&h=350&fit=crop&q=80', // Butter Chicken
+      U + '1546833999-b9f581a1996d?w=500&h=350&fit=crop&q=80', // Dal Makhani
+      U + '1606491956689-2ea866880c84?w=500&h=350&fit=crop&q=80', // Chole Bhature
+      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80', // Rogan Josh
+      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80'  // Kadhai Chicken
+    ],
+    dosa: [
+      U + '1630383249896-425f7b34b7b1?w=500&h=350&fit=crop&q=80', // Masala Dosa
+      U + '1668236543090-82eba5ee5976?w=500&h=350&fit=crop&q=80', // Idli Sambar
+      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80', // Medu Vada
+      U + '1630383249896-425f7b34b7b1?w=500&h=350&fit=crop&q=80'  // Uttapam
+    ],
+    chaat: [
+      U + '1601050690597-df0568f70950?w=500&h=350&fit=crop&q=80', // Pani Puri
+      U + '1626777552726-4a6b54c97e46?w=500&h=350&fit=crop&q=80', // Bhel Puri
+      U + '1589301760014-d929f3979dbc?w=500&h=350&fit=crop&q=80', // Aloo Tikki
+      U + '1601050690597-df0568f70950?w=500&h=350&fit=crop&q=80'  // Papdi Chaat
+    ],
+    kebab: [
+      U + '1544025162-d76538b2a681?w=500&h=350&fit=crop&q=80', // Seekh Kebab
+      U + '1603360946311-316252d35f38?w=500&h=350&fit=crop&q=80', // Shawarma Wrap
+      U + '1529193591184-b1d58069ecdd?w=500&h=350&fit=crop&q=80', // Doner wrap
+      U + '1599487488170-d11ec9c081dc?w=500&h=350&fit=crop&q=80'  // Grilled Skewer
+    ],
+    dessert: [
+      U + '1578985545062-69928b1d9587?w=500&h=350&fit=crop&q=80', // Brownie
+      U + '1559181567-c3190ef39db1?w=500&h=350&fit=crop&q=80', // Cheesecake
+      U + '1563805042-7684c019e1cb?w=500&h=350&fit=crop&q=80', // Ice Cream Sundae
+      U + '1488900128323-21503983d706?w=500&h=350&fit=crop&q=80', // Donut
+      U + '1484723091739-30a097e8f929?w=500&h=350&fit=crop&q=80', // Waffles
+      U + '1519676867240-d03521be7513?w=500&h=350&fit=crop&q=80', // Crepes
+      U + '1598511453168-c00a2478b3f5?w=500&h=350&fit=crop&q=80', // Baklava
+      U + '1571877227200-a0d98ea607e9?w=500&h=350&fit=crop&q=80'  // Tiramisu / Custard
+    ],
+    drink: [
+      U + '1572490122747-3a5c9abdab62?w=500&h=350&fit=crop&q=80', // Milkshake
+      U + '1558618666-fcd25c85cd64?w=500&h=350&fit=crop&q=80', // Bubble Tea
+      U + '1517723368363-cc7b36ab5c6b?w=500&h=350&fit=crop&q=80', // Coffee / Latte
+      U + '1534353436294-0dbd4bdac845?w=500&h=350&fit=crop&q=80', // Juice / Mojito
+      U + '1544145945-f90425340c7e?w=500&h=350&fit=crop&q=80', // Smoothie
+      U + '1571091718767-18b5b1457add?w=500&h=350&fit=crop&q=80'  // Lassi
+    ],
+    salad: [
+      U + '1512621776951-a57141f2eefd?w=500&h=350&fit=crop&q=80', // Power Bowl
+      U + '1540420773420-3366772f4999?w=500&h=350&fit=crop&q=80', // Salad
+      U + '1546069901-ba9599a7e63c?w=500&h=350&fit=crop&q=80'  // Avocado Toast / Bowl
+    ],
+    meat: [
+      U + '1546833999-b9f581a1996d?w=500&h=350&fit=crop&q=80', // Steak
+      U + '1529692236671-f1f6cf9683ba?w=500&h=350&fit=crop&q=80', // Ribs
+      U + '1599487488170-d11ec9c081dc?w=500&h=350&fit=crop&q=80', // Fried Chicken
+      U + '1544025162-d76538b2a681?w=500&h=350&fit=crop&q=80'  // Grilled Meat
+    ],
+    seafood: [
+      U + '1565680018434-b513d5e5fd47?w=500&h=350&fit=crop&q=80', // Salmon
+      U + '1559737607-9878a634d41a?w=500&h=350&fit=crop&q=80', // Prawns
+      U + '1534080564595-5b8d262ab30a?w=500&h=350&fit=crop&q=80', // Lobster
+      U + '1599084993091-1cb5c0721cc6?w=500&h=350&fit=crop&q=80'  // Calamari
+    ],
+    asian: [
+      U + '1563245372-f21724e3856d?w=500&h=350&fit=crop&q=80', // Dumpling / Gyoza
+      U + '1562802378-063ec186a863?w=500&h=350&fit=crop&q=80', // Fried Rice
+      U + '1585032226651-759b368d7246?w=500&h=350&fit=crop&q=80', // Asian Noodles
+      U + '1603133872878-684f208fb84b?w=500&h=350&fit=crop&q=80'  // Bibimbap
+    ],
+    general: [
+      U + '1504674900247-0877df9cc836?w=500&h=350&fit=crop&q=80',
+      U + '1498837167922-ddd27525d352?w=500&h=350&fit=crop&q=80',
+      U + '1490645935967-10de6ba17061?w=500&h=350&fit=crop&q=80',
+      U + '1567620905732-2d1ec7ab7445?w=500&h=350&fit=crop&q=80',
+      U + '1565299624946-b28f40a0ae38?w=500&h=350&fit=crop&q=80'
+    ]
+  };
+
+  // Find correct pool
+  let pool = pools.general;
+  if (n.includes('pizza') || n.includes('margherita') || n.includes('diavola') || n.includes('pepperoni') || n.includes('quattro') || n.includes('cheese burst')) {
+    pool = pools.pizza;
+  } else if (n.includes('burger') || n.includes('smash') || n.includes('cheeseburger') || n.includes('stack') || n.includes('krunchbox')) {
+    pool = pools.burger;
+  } else if (n.includes('fries') || n.includes('chips') || n.includes('poutine')) {
+    pool = pools.fries;
+  } else if (n.includes('sushi') || n.includes('nigiri') || n.includes('roll') || n.includes('omakase')) {
+    pool = pools.sushi;
+  } else if (n.includes('ramen') || n.includes('noodle') || n.includes('laksa') || n.includes('underground')) {
+    pool = pools.ramen;
+  } else if (n.includes('taco') || n.includes('nacho') || n.includes('quesadilla') || n.includes('loco')) {
+    pool = pools.tacos;
+  } else if (n.includes('biryani') || n.includes('darbar')) {
+    pool = pools.biryani;
+  } else if (n.includes('paneer') || n.includes('garden')) {
+    pool = pools.paneer;
+  } else if (n.includes('dal') || n.includes('chole') || n.includes('curry') || n.includes('rogan josh') || n.includes('tikka') || n.includes('makhani')) {
+    pool = pools.curry;
+  } else if (n.includes('dosa') || n.includes('idli') || n.includes('vada') || n.includes('uttapam') || n.includes('south')) {
+    pool = pools.dosa;
+  } else if (n.includes('pani puri') || n.includes('chaat') || n.includes('samosa') || n.includes('bhel') || n.includes('kachori') || n.includes('corner')) {
+    pool = pools.chaat;
+  } else if (n.includes('kebab') || n.includes('shawarma') || n.includes('doner') || n.includes('wrap') || n.includes('delight') || n.includes('istana')) {
+    pool = pools.kebab;
+  } else if (n.includes('cake') || n.includes('waffle') || n.includes('crepe') || n.includes('sundae') || n.includes('ice cream') || n.includes('donut') || n.includes('macaron') || n.includes('baklava') || n.includes('brownie') || n.includes('tiramisu') || n.includes('panna cotta') || n.includes('dessert') || n.includes('funday') || n.includes('crumb') || n.includes('bistro')) {
+    pool = pools.dessert;
+  } else if (n.includes('shake') || n.includes('lassi') || n.includes('coffee') || n.includes('tea') || n.includes('smoothie') || n.includes('juice') || n.includes('drink') || n.includes('yakult') || n.includes('sharbat') || n.includes('coco') || n.includes('bubble')) {
+    pool = pools.drink;
+  } else if (n.includes('salad') || n.includes('bowl') || n.includes('healthy') || n.includes('green bowl')) {
+    pool = pools.salad;
+  } else if (n.includes('steak') || n.includes('meat') || n.includes('chicken') || n.includes('ribs') || n.includes('brisket') || n.includes('pork') || n.includes('wings') || n.includes('grill') || n.includes('wing')) {
+    pool = pools.meat;
+  } else if (n.includes('salmon') || n.includes('fish') || n.includes('seafood') || n.includes('prawn') || n.includes('shrimp') || n.includes('lobster') || n.includes('calamari') || n.includes('catch')) {
+    pool = pools.seafood;
+  } else if (n.includes('dumpling') || n.includes('dim sum') || n.includes('bao') || n.includes('spring roll') || n.includes('gyoza') || n.includes('wok') || n.includes('rice') || n.includes('asian') || n.includes('palace') || n.includes('roll') || n.includes('seoul')) {
+    pool = pools.asian;
   }
-  return U+'1504674900247-0877df9cc836?w=600&h=400&fit=crop&q=80';
+  
+  // Hash name to index
+  let hash = 0;
+  for (let i = 0; i < n.length; i++) {
+    hash = n.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % pool.length;
+  return pool[index];
 }
 
 function renderRestaurants() {
@@ -1831,9 +1929,12 @@ function openModal(id) {
   document.getElementById('modal-meta').textContent = `⭐ ${activeRestaurant.rating}  ·  🕒 ${activeRestaurant.time}  ·  🚴 Delivery ${activeRestaurant.fee}`;
   document.getElementById('menu-grid').innerHTML = activeRestaurant.menu.map(item => `
     <div class="menu-item">
-      <div class="menu-item-info">
-        <h4>${item.emoji} ${item.name}</h4>
-        <p>${item.desc}</p>
+      <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; text-align: left;">
+        <img class="menu-item-img" src="${getFoodImage(item.name)}" alt="${item.name}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=150&fit=crop&q=80'" style="margin-right: 0;">
+        <div class="menu-item-info" style="min-width: 0;">
+          <h4 style="font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">${item.emoji} ${item.name}</h4>
+          <p style="font-size: 0.8rem; color: var(--muted); line-height: 1.4; margin-top: 4px;">${item.desc}</p>
+        </div>
       </div>
       <div class="menu-item-right">
         <div class="menu-item-price">₹${item.price.toLocaleString('en-IN')}</div>
