@@ -1146,7 +1146,10 @@
           <div style="font-size: 0.75rem; color: var(--muted); margin-bottom: 2px;">Total Price</div>
           <span style="font-size: 1.3rem; font-weight: 700; color: var(--accent2);" id="cust-total-price">₹0</span>
         </div>
-        <button class="checkout-btn" id="cust-add-btn" style="margin-top: 0; width: auto; padding: 12px 32px; font-weight: 600;">Add to Cart</button>
+        <div style="display: flex; gap: 8px;">
+          <button class="checkout-btn" id="cust-add-btn" style="margin-top: 0; width: auto; padding: 12px 20px; font-size: 0.9rem; font-weight: 600; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 50px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='var(--text)';" onmouseout="this.style.background='transparent'; this.style.borderColor='var(--border)';">Add to Cart</button>
+          <button class="checkout-btn" id="cust-direct-btn" style="margin-top: 0; width: auto; padding: 12px 24px; font-size: 0.9rem; font-weight: 600; background: var(--accent); color: #fff; border-radius: 50px;">Order Now</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2093,6 +2096,9 @@ function addToCart(restaurantId, itemId) {
   document.getElementById('cust-add-btn').onclick = function() {
     confirmAddToCart();
   };
+  document.getElementById('cust-direct-btn').onclick = function() {
+    confirmDirectOrder();
+  };
   
   document.getElementById('customizer-modal').classList.add('open');
 }
@@ -2161,6 +2167,51 @@ function confirmAddToCart() {
   renderCart();
   bumpBadge();
   closeCustomizerModalDirect();
+}
+
+function confirmDirectOrder() {
+  if (!customizerTarget) return;
+  
+  // Clear cart for direct single-item order
+  cart = [];
+  
+  const { restaurantId, item } = customizerTarget;
+  const restaurant = DB.restaurants.find(r => r.id === restaurantId);
+  
+  const size = document.querySelector('input[name="cust-size"]:checked').value;
+  const extraCheese = document.getElementById('cust-extra-cheese').checked;
+  const extraBacon = document.getElementById('cust-extra-bacon').checked;
+  
+  let optionsText = `Size: ${size}`;
+  let additionalPrice = 0;
+  if (size === 'Large') additionalPrice += 238;
+  if (extraCheese) {
+    optionsText += ', +Cheese';
+    additionalPrice += 143;
+  }
+  if (extraBacon) {
+    optionsText += ', +Bacon';
+    additionalPrice += 190;
+  }
+  
+  const finalPrice = item.price + additionalPrice;
+  const cartItemKey = `${item.id}-${size}-${extraCheese ? 'y' : 'n'}-${extraBacon ? 'y' : 'n'}`;
+  
+  cart.push({
+    ...item,
+    cartKey: cartItemKey,
+    price: finalPrice,
+    qty: 1,
+    restaurantName: restaurant.name,
+    customText: optionsText
+  });
+  
+  renderCart();
+  bumpBadge();
+  closeCustomizerModalDirect();
+  
+  // Directly trigger checkout flow
+  placeOrder();
 }
 
 // ── CART SIDEBAR ENGINE ──
